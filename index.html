@@ -1,1 +1,1294 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل المستخدم - نظام SeaStar الذكي لإدارة التعليم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #00204A;
+            --deep-blue: #0a1930;
+            --light-blue: #007bff;
+            --cyber-blue: #00a8ff;
+            --cyber-green: #0be881;
+            --cyber-purple: #9c88ff;
+            --cyber-red: #ff3f34;
+            --light-gray: #f8f9fa;
+            --dark-gray: #1e272e;
+            --cyber-yellow: #ffdd59;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+        
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 168, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(155, 136, 255, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 168, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .cyber-circle {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-blue);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .pulse {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--cyber-green);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(11, 232, 129, 0.7);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(11, 232, 129, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(11, 232, 129, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(11, 232, 129, 0); }
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--cyber-green);
+            background: rgba(11, 232, 129, 0.1);
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger .bar {
+            width: 30px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        .hero-section {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 40px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+        
+        .hero-description {
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.8;
+        }
+        
+        .btn {
+            padding: 15px 45px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-green));
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.3);
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 168, 255, 0.5);
+        }
+        
+        .section {
+            padding: 100px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .section-subtitle {
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* دليل المستخدم */
+        .user-guide-container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .guide-nav {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+        
+        .guide-nav-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--cyber-green);
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .guide-nav-links {
+            list-style: none;
+        }
+        
+        .guide-nav-links li {
+            margin-bottom: 10px;
+        }
+        
+        .guide-nav-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .guide-nav-links a:hover, .guide-nav-links a.active {
+            background: rgba(11, 232, 129, 0.1);
+            color: var(--cyber-green);
+            padding-right: 20px;
+        }
+        
+        .guide-content {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 35px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .guide-section {
+            margin-bottom: 50px;
+        }
+        
+        .guide-section-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--cyber-green);
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .guide-section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 120px;
+            height: 3px;
+            background: var(--cyber-green);
+            border-radius: 3px;
+        }
+        
+        .guide-subsection {
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 3px solid var(--cyber-blue);
+        }
+        
+        .guide-subsection-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--cyber-blue);
+        }
+        
+        .guide-links {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .guide-links li {
+            margin-bottom: 10px;
+        }
+        
+        .guide-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .guide-links a:hover {
+            background: rgba(11, 232, 129, 0.1);
+            color: var(--cyber-green);
+            transform: translateX(-5px);
+        }
+        
+        .guide-links a i {
+            margin-left: 10px;
+            color: var(--cyber-green);
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 30px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            padding-right: 50px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--cyber-green);
+        }
+        
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 60px 40px 30px;
+            margin-top: 100px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-section {
+            padding: 20px;
+        }
+        
+        .footer-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--cyber-green);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--cyber-green);
+            border-radius: 3px;
+        }
+        
+        .footer-section p {
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.7;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background: var(--cyber-green);
+            transform: translateY(-5px);
+            color: var(--dark-blue);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-links a:hover {
+            color: var(--cyber-green);
+            padding-right: 10px;
+        }
+        
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .contact-info i {
+            color: var(--cyber-green);
+            font-size: 1.2rem;
+            min-width: 25px;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.5rem;
+            }
+            
+            .hero-description {
+                font-size: 1.2rem;
+            }
+            
+            .section {
+                padding: 80px 20px;
+            }
+            
+            .section-title {
+                font-size: 2.2rem;
+            }
+            
+            .user-guide-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-nav {
+                position: static;
+                margin-bottom: 30px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .section-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .guide-links {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="grid-lines"></div>
+    
+    <div class="cyber-circle" style="width: 300px; height: 300px; top: 10%; left: 15%;"></div>
+    <div class="cyber-circle" style="width: 200px; height: 200px; bottom: 15%; right: 10%;"></div>
+    <div class="pulse" style="top: 20%; left: 20%;"></div>
+    <div class="pulse" style="bottom: 25%; right: 25%;"></div>
+    
+    <nav class="navbar">
+        <div class="logo">SeaStar</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="portfolio.html">أعمالنا</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="contact.html">اتصل بنا</a></li>
+            <li><a href="blog.html">المدونة</a></li>
+            <li><a href="seastar-system.html" class="active">نظام سيستار</a></li>
+            <li><a href="user-guide.html">دليل المستخدم</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+    
+    <section class="hero-section">
+        <div class="hero-content animate">
+            <h1 class="hero-title">دليل المستخدم لنظام SeaStar</h1>
+            <p class="hero-subtitle">مرجع شامل لكل وظائف النظام وميزاته</p>
+            <p class="hero-description">
+                اكتشف كيفية استخدام نظام SeaStar لإدارة التعليم بكل كفاءة واحترافية. يحتوي هذا الدليل على شرح مفصل لجميع أقسام النظام ووظائفه لمساعدتك في تحقيق أقصى استفادة من النظام.
+            </p>
+        </div>
+    </section>
 
+    <section class="section">
+        <div class="section-header animate">
+            <h2 class="section-title">دليل الاستخدام الشامل</h2>
+            <p class="section-subtitle">ابحث عن الموضوع الذي تريده أو تصفح الأقسام المختلفة</p>
+        </div>
+        
+        <div class="user-guide-container animate">
+            <div class="guide-nav">
+                <h3 class="guide-nav-title">أقسام الدليل</h3>
+                <ul class="guide-nav-links">
+                    <li><a href="#dashboard" class="active">لوحة التحكم</a></li>
+                    <li><a href="#administration">الإدارة</a></li>
+                    <li><a href="#student">الطلاب</a></li>
+                    <li><a href="#exam">الامتحانات</a></li>
+                    <li><a href="#hr">الموارد البشرية</a></li>
+                    <li><a href="#accounts">الحسابات</a></li>
+                    <li><a href="#utilities">الأدوات المساعدة</a></li>
+                    <li><a href="#report">التقارير</a></li>
+                    <li><a href="#settings">قسم الإعدادات</a></li>
+                </ul>
+            </div>
+            
+            <div class="guide-content">
+                <div class="search-box">
+                    <input type="text" placeholder="ابحث في دليل المستخدم...">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <!-- لوحة التحكم -->
+                <div class="guide-section" id="dashboard">
+                    <h3 class="guide-section-title">1. لوحة التحكم (DASHBOARD)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">لوحة التحكم الرئيسية</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> لوحة التحكم (Dashboard)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مدير الشريط الجانبي (Sidebar Manager)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الإدارة -->
+                <div class="guide-section" id="administration">
+                    <h3 class="guide-section-title">2. الإدارة (ADMINISTRATION)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">قسم الإدارة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قسم الإدارة (Administration Section)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إستعالم القبول (Admission Query)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سجل الزوار (Visitor Book)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> شكوى (Complaint)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بريد وارد (Inbox)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بريد صادر (Outbox)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سجل المكالمات (Call Log)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعداد الإدارة (Admin Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بطاقة هوية (ID Card)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> شهادة الطالب (Student Certificate)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إنشاء شهادة (Generate Certificate)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إنشاء بطاقة هوية (Generate ID Card)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">أكاديميات</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مادة اختيارية (Optional Subject)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> القسم (Section)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الفصل (Class)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المواد (Subjects)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تعيين معلم الفصل (Assign Class Teacher)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تعيين مادة (Assign Subject)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> القاعة (Room)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> جدول مخصص (Class Routine)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">مادة دراسية</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> رفع المحتوى (Upload Content)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> واجب (Assignment)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> منهج دراسي (Syllabus)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تحميلات أخرى (Other Downloads)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">خطة الدرس</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الدرس (Lesson)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الموضوع (Topic)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نظرة عامة على الموضوع (Topic Overview)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> خطة الدرس (Lesson Plan)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نظرة عامة على خطة الدرس (Lesson Plan Overview)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">طباعة مجمعة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بطاقة هوية (ID Card)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> شهادة الطالب (Student Certificate)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طباعة الرواتب مجمعة (Payroll Bulk Print)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طباعة فواتير الرسوم مجمعة (Fees Invoice Bulk Print)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات طباعة فواتير الرسوم مجمعة (Fees Invoice Bulk Print Settings)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">مركز التحميل</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع المحتوى (Content Type)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة المحتوى (Content List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة المحتويات المتحركة (Slider Content List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة الفيديو (Video List)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الطلاب -->
+                <div class="guide-section" id="student">
+                    <h3 class="guide-section-title">3. الطلاب (STUDENT)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">معلومات الطالب</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> معلومات الطالب (Student Information)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> فئة الطالب (Student Category)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إضافة طالب (Add Student)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة الطلاب (Student List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طالب متعدد الفصول (Student.Multi_class_student)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حذف سجل الطالب (Student.Delete_student_record)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طلاب غير مخصصين (Student.Unassigned_student)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حضور الطلاب (Student Attendance)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مجموعة طلاب (Student Group)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> ترقية الطلاب (Promote Student)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طلاب ذوي الإعاقة (Disabled Student)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الحضور حسب المادة (Attendance by Subject)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تصدير الطلاب (Export Students)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> وقت إرسال الرسائل النصية للطلاب (Student.Sms_sending_time)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">سجلات السلوك</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سجلات السلوك (Behavior Records)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الحوادث (Incidents)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تعيين حادث (Assign Incident)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير حوادث الطلاب (Student Incident Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير السلوك (Behavior Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الفصل والقسم (Class and Section Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير حسب الحادث (Report by Incident)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الإعدادات (Settings)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">رسوم</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> رسوم (Fees)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مجموعة الرسوم (Fees Group)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع الرسوم (Fees Type)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> فاتورة الرسوم (Fees Invoice)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> دفع بنكي (Bank Payment)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات فاتورة الرسوم (Fees Invoice Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> ترحيل الرسوم (Fees Collect)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">الواجب المنزلي</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الواجب المنزلي (Homework)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إضافة واجب منزلي (Add Homework)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة الواجبات (Homework List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الواجب المنزلي (Homework.Homework_report)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">المكتبة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المكتبة (Library)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إضافة كتاب (Add Book)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة الكتب (Book List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تصنيفات الكتب (Book Categories)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إضافة عضو (Add Member)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إصدار / إرجاع كتاب (Issue / Return Book)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> جميع الكتب المعارة (All Issued Books)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مؤلف (Author)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">النقل</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> النقل (Transport)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الطرق (Routes)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المركبة (Vehicle)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تعيين مركبة (Assign Vehicle)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">سكن طلابي</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سكن طلابي (Dormitory)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> غرف السكن (Dormitory Rooms)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع الغرفة (Room Type)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الامتحانات -->
+                <div class="guide-section" id="exam">
+                    <h3 class="guide-section-title">4. الامتحانات (EXAM)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">امتحان</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> امتحان (Exam)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع الامتحان (Exam Type)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعداد الامتحان (Exam Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> جدول الامتحانات (Exam Schedule)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حضور الامتحان (Exam Attendance)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سجل الدرجات (Mark Sheet)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقدير الدرجات (Grade Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إرسال الدرجات عبر SMS (Send Mark by SMS)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير سجل الدرجات (Exam.Marksheet_report)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">خطة الامتحان</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> خطة الامتحان (Exam Plan)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بطاقة القبول/الدخول (Admit Card)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> خطة المقاعد (Seat Plan)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">امتحان إلكتروني</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> امتحان إلكتروني (Online Exam)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مجموعة الأسئلة (Question Group)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بنك الأسئلة (Question Bank)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> امتحان إلكتروني (Online Exam)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الموارد البشرية -->
+                <div class="guide-section" id="hr">
+                    <h3 class="guide-section-title">5. الموارد البشرية (HR)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">الموارد البشرية</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الموارد البشرية (Human Resources)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المسمى الوظيفي (Designation)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> القسم (Department)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إضافة موظف (Add Staff)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> دليل الموظفين (Staff Directory)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حضور الموظفين (Staff Attendance)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> كشوف المرتبات (Payroll)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">تقييم المعلم</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقييم المعلم (Teacher Evaluation)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير معتمد (Approved Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير معلق (Pending Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير حسب المعلم (Report by Teacher)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الإعدادات (Settings)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">إجازة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إجازة (Leave)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقديم طلب إجازة (Apply Leave)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> اعتماد طلب إجازة (Approve Leave)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طلب إجازة قيد الانتظار (Pending Leave Request)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تحديد الإجازات (Assign Leave)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع الإجازة (Leave Type)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">الأدوار والصلاحيات</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الأدوار والصلاحيات (Role & Permission)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> صلاحية الدخول (Login Permission)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الدور (Role)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الصلاحية (Permission)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> صلاحية دخول الرسوم المستحقة (Due Fees Login Permission)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الحسابات -->
+                <div class="guide-section" id="accounts">
+                    <h3 class="guide-section-title">6. الحسابات (ACCOUNTS)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">المحفظة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المحفظة (Wallet)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إيداع معلق (Pending Deposit)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الموافقة على الإيداع (Approve Deposit)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> رفض الإيداع (Reject Deposit)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> معاملات المحفظة (Wallet Transaction)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> طلب استرداد (Refund Request)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">الحسابات</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الحسابات (Accounts)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الأرباح والخسائر (Profit & Loss)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إيرادات (Income)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مصروفات (Expenses)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> دليل الحسابات (Chart of Accounts)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حساب بنكي (Bank Account)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تحويل أموال (Fund Transfer)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> معاملة (Transaction)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">المخزون</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المخزون (Inventory)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تصنيف الأصناف (Item Category)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة الأصناف (Item List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مستودع الأصناف (Item Store)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المورد (Supplier)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> استلام أصناف (Receive Item)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قائمة الاستلام (Receive List)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> بيع أصناف (Sell Item)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> صرف أصناف (Issue Item)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- الأدوات المساعدة -->
+                <div class="guide-section" id="utilities">
+                    <h3 class="guide-section-title">7. الأدوات المساعدة (UTILITIES)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">المحادثة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المحادثة (Chat)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> صندوق الدردشة (Chat Box)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الدعوات (Invitation)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المستخدمون المحظورون (Blocked User)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">الاتصالات</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الاتصالات (Communication)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> لوحة الإعلانات (Notice Board)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إرسال بريد إلكتروني / رسائل نصية (Communicate.Send_email_V_sms)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سجل البريد الإلكتروني / الرسائل النصية (Email / SMS Log)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> فعالية (Event)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> التقويم (Communicate.Calendar)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قالب البريد الإلكتروني (Email Template)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> قالب الرسائل النصية (SMS Template)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">النمط</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> النمط (Themes/Style)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الخلفية (Background Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سمة الألوان (Color Theme)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- التقارير -->
+                <div class="guide-section" id="report">
+                    <h3 class="guide-section-title">8. التقارير (REPORT)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">تقرير الطالب</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الطالب (Student Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير حضور الطلاب (Student Attendance Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير حضور المادة (Subject Attendance Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير التقييم (Assessment Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير أولياء الأمور (Parent Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> السجل الأكاديمي للطلاب (Student Academic Record)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير دخول الطلاب (Student Login Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الفصل (Class Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> جدول المخصص (Class Routine Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> سجل المستخدمين (User Log)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الطالب (Student Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> السجل السابق (Previous Record)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير نقل الطلاب (Student Transport Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير سكن الطلاب (Student Dormitory Report)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">تقرير الاختبار</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الاختبار (Exam Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> جدول الامتحانات (Exam Schedule)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير كلمة التميز (Marksheet Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الامتحان الإلكتروني (Online Exam Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير كشف الدرجات (Marksheet Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير بطاقة التقدم (Progress Card Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> النتيجة السابقة (Previous Result)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">تقرير الموظفين</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الموظفين (Staff Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير حضور الموظفين (Staff Attendance Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير كشوف المرتبات (Payroll Report)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">تقرير الرسوم</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الرسوم (Fees Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الرسوم المستحقة (Fees Due Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الغرامات (Fine Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير المدفوعات (Payment Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الرصيد (Balance Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الإعفاءات (Waiver Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير المحفظة (Wallet Report)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">تقرير الحسابات</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الحسابات (Accounts Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الإيرادات (Income Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير المصروفات (Expense Report)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تقرير الأرباح والخسائر (Profit & Loss Report)</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- قسم الإعدادات -->
+                <div class="guide-section" id="settings">
+                    <h3 class="guide-section-title">9. قسم الإعدادات (SETTINGS SECTION)</h3>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">إعدادات الرسوم</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الرسوم (Fees Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الرسوم (Fees Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع الرسوم (Fees Type)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مجموعة الرسوم (Fees Group)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تخصيص الرسوم (Assign Fees)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> تخفيض الرسوم (Fees Discount)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعفاء الرسوم (Fees Waiver)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات فاتورة الرسوم (Fees Invoice Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الفواتير المجمعة (Bulk Invoice Settings)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">إعدادات الاختبار</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الاختبار (Exam Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الاختبار (Exam Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نوع الاختبار (Exam Type)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعداد الدرجات (Grade Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعداد التنسيق (Format Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعداد قواعد الامتحان (Exam Rules Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> المركز (Center)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> جميع مواقع الامتحانات (Exam.All_exam_position)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات توقيع الامتحان (Exam.Exam_signature_settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات بطاقة القبول (Admit Card Setting)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات خطة المقاعد (Seat Plan Setting)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">حقل مخصص</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حقل مخصص (Custom Fields)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حقل مخصص (Custom Fields)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">الإعدادات العامة</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الإعدادات العامة (General Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الطالب (Student.Student_settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات المصادقة الثنائية (Auth.Two_factor_setting)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات خطة الدرس (Lesson Plan Setting)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الموظفين (Staff Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الدردشة (Chat Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الإعدادات العامة (General Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مادة اختيارية (Optional Subject)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> السنة الأكاديمية (Academic Year)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> عطلة (Holiday)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مدير الوحدات (Module Manager)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات إشعارات النظام (System_settings.Notification_setting)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> Tawk To Chat (System_settings.Tawk To Chat)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> دردشة الماسنجر (System_settings.Messenger Chat)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إدارة العملة (Currency Management)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات البريد الإلكتروني (Email Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الدفع (Payment Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الإعداد الأساسي (Basic Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الرسائل القصيرة (SMS Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> عطلة نهاية الأسبوع (Weekend)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات اللغة (Language Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات المنطقة الزمنية (Timezone Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> العملة (Currency)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات الموقع (Website Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> الأذونات (Permissions)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> مسح احتياطي (Backup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعداد لوحة التحكم (Dashboard Setup)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> حول والتحديثات (About & Updates)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> صلاحية API (API Permission)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> اللغة (Language)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> إعدادات شاشة التحميل المسبق (System_settings.Preloader Settings)</a></li>
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> أدوات مساعدة (Utilities)</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="guide-subsection">
+                        <h4 class="guide-subsection-title">نظام إدارة المحتوى للواجهة الأمامية</h4>
+                        <ul class="guide-links">
+                            <li><a href="#"><i class="fas fa-arrow-left"></i> نظام إدارة المحتوى للواجهة الأمامية (Frontend Content Management System)</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 class="footer-title">عن SeaStar</h3>
+                <p>نظام إدارة تعليمي متكامل صمم لتحويل مؤسسات التعليم إلى عصر الرقمنة بكفاءة وتميز.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">روابط سريعة</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-arrow-left"></i> الرئيسية</a></li>
+                    <li><a href="services.html"><i class="fas fa-arrow-left"></i> الخدمات</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-arrow-left"></i> أعمالنا</a></li>
+                    <li><a href="about.html"><i class="fas fa-arrow-left"></i> من نحن</a></li>
+                    <li><a href="contact.html"><i class="fas fa-arrow-left"></i> اتصل بنا</a></li> 
+                    <li><a href="user-guide.html"><i class="fas fa-arrow-left"></i> دليل المستخدم</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3 class="footer-title">معلومات الاتصال</h3>
+                <p><i class="fas fa-map-marker-alt"></i> صنعاء، دارس، المدينة الخضراء</p>
+                <p><i class="fas fa-phone"></i> +967 779 168 887</p>
+                <p><i class="fas fa-envelope"></i> prcmased@gmail.com</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2025 SeaStar. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+    
+    <script>
+        // إضافة تأثيرات الظهور عند التمرير
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.animate').forEach(element => {
+                element.classList.remove('animate');
+                observer.observe(element);
+            });
+            
+            // التنقل السلس
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if(targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                        
+                        // تحديث الروابط النشطة في القائمة الجانبية
+                        document.querySelectorAll('.guide-nav-links a').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    }
+                });
+            });
+            
+            // قائمة الهاتف المحمول
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            // البحث في دليل المستخدم
+            const searchInput = document.querySelector('.search-box input');
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const links = document.querySelectorAll('.guide-links a');
+                
+                links.forEach(link => {
+                    const text = link.textContent.toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        link.parentElement.style.display = 'block';
+                    } else {
+                        link.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
