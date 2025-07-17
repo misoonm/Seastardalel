@@ -1,0 +1,1079 @@
+ <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المكالمات - نظام SeaStar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #00204A;
+            --deep-blue: #0a1930;
+            --cyber-blue: #00a8ff;
+            --cyber-green: #0be881;
+            --cyber-teal: #1abc9c;
+            --cyber-purple: #9c88ff;
+            --cyber-red: #ff3f34;
+            --light-gray: #f8f9fa;
+            --dark-gray: #1e272e;
+            --cyber-orange: #ff9f1a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+        
+        /* شبكة خلفية */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 168, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(156, 136, 255, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 168, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .cyber-circle {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-blue);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .pulse {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--cyber-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(0, 168, 255, 0.7);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 168, 255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(0, 168, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 168, 255, 0); }
+        }
+        
+        /* التنقل */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--cyber-blue);
+            background: rgba(0, 168, 255, 0.1);
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger .bar {
+            width: 30px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* القسم البطولي */
+        .hero-section {
+            min-height: 30vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 40px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+        
+        /* أقسام لوحة التحكم */
+        .dashboard-section {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--cyber-blue);
+            border-radius: 3px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:hover {
+            background: var(--cyber-blue);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .btn i {
+            font-size: 0.9rem;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(90deg, var(--cyber-blue), var(--cyber-teal));
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 168, 255, 0.3);
+        }
+        
+        .primary-btn:hover {
+            box-shadow: 0 10px 25px rgba(0, 168, 255, 0.5);
+        }
+        
+        /* تخطيط سجل المكالمات */
+        .call-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        /* نموذج إضافة مكالمة */
+        .add-call-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-title {
+            font-size: 1.4rem;
+            color: var(--cyber-blue);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-label.required:after {
+            content: ' *';
+            color: var(--cyber-red);
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--cyber-blue);
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+        }
+        
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-option input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* قائمة المكالمات */
+        .call-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .list-title {
+            font-size: 1.4rem;
+            color: var(--cyber-blue);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            min-width: 250px;
+        }
+        
+        .call-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .call-table th {
+            background: rgba(0, 168, 255, 0.1);
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--cyber-blue);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .call-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .call-table tr:hover {
+            background: rgba(0, 168, 255, 0.05);
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .view-btn {
+            background: rgba(26, 188, 156, 0.1);
+        }
+        
+        .view-btn:hover {
+            background: rgba(26, 188, 156, 0.3);
+        }
+        
+        .edit-btn {
+            background: rgba(255, 221, 89, 0.1);
+        }
+        
+        .edit-btn:hover {
+            background: rgba(255, 221, 89, 0.3);
+        }
+        
+        .delete-btn {
+            background: rgba(255, 63, 52, 0.1);
+        }
+        
+        .delete-btn:hover {
+            background: rgba(255, 63, 52, 0.3);
+        }
+        
+        .call-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+        
+        .incoming {
+            background: rgba(0, 168, 255, 0.2);
+            color: var(--cyber-blue);
+        }
+        
+        .outgoing {
+            background: rgba(11, 232, 129, 0.2);
+            color: var(--cyber-green);
+        }
+        
+        /* دليل المستخدم */
+        .guide-container {
+            background: rgba(0, 168, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-blue);
+            margin-top: 40px;
+            grid-column: span 2;
+        }
+        
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .guide-icon {
+            font-size: 2.5rem;
+            color: var(--cyber-blue);
+        }
+        
+        .guide-title {
+            font-size: 1.8rem;
+            color: var(--cyber-blue);
+        }
+        
+        .guide-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .guide-text {
+            padding: 15px;
+        }
+        
+        .guide-section-title {
+            font-size: 1.3rem;
+            color: var(--cyber-blue);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--cyber-blue);
+        }
+        
+        .guide-list {
+            list-style: none;
+        }
+        
+        .guide-list li {
+            margin-bottom: 15px;
+            padding-right: 20px;
+            position: relative;
+        }
+        
+        .guide-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-blue);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        .guide-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px dashed var(--cyber-blue);
+        }
+        
+        .guide-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tips-section {
+            background: rgba(26, 188, 156, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-teal);
+            margin-top: 20px;
+        }
+        
+        .tips-title {
+            font-size: 1.3rem;
+            color: var(--cyber-teal);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tips-title i {
+            font-size: 1.5rem;
+        }
+        
+        .tips-list {
+            padding-right: 20px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .tips-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-teal);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .call-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero-section {
+                padding: 130px 20px 30px;
+            }
+            
+            .hero-title {
+                font-size: 1.7rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-actions {
+                flex-wrap: wrap;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                flex-direction: column;
+            }
+            
+            .search-input {
+                min-width: 100%;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="grid-lines"></div>
+    
+    <div class="cyber-circle" style="width: 300px; height: 300px; top: 10%; left: 15%;"></div>
+    <div class="cyber-circle" style="width: 200px; height: 200px; bottom: 15%; right: 10%;"></div>
+    <div class="pulse" style="top: 20%; left: 20%;"></div>
+    <div class="pulse" style="bottom: 25%; right: 25%;"></div>
+    
+    <nav class="navbar">
+        <div class="logo">SeaStar</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="portfolio.html">أعمالنا</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="contact.html">اتصل بنا</a></li>
+            <li><a href="blog.html">المدونة</a></li>
+            <li><a href="seastar-system.html">نظام سيستار</a></li>
+            <li><a href="user-guide.html">دليل المستخدم</a></li>
+            <li><a href="dashboard.html">لوحة التحكم</a></li>
+            <li><a href="visitor-book.html">سجل الزوار</a></li>
+            <li><a href="complaints.html">الشكاوى</a></li>
+            <li><a href="inbox.html">البريد الوارد</a></li>
+            <li><a href="outbox.html">البريد الصادر</a></li>
+            <li><a href="call-log.html" class="active">سجل المكالمات</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+    
+    <section class="hero-section">
+        <div class="hero-content animate">
+            <h1 class="hero-title">سجل المكالمات</h1>
+            <p class="hero-subtitle">تسجيل وتتبع جميع المكالمات الصادرة والواردة للمؤسسة</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header animate">
+            <div>
+                <h2 class="section-title">إدارة سجل المكالمات</h2>
+                <p class="section-subtitle">توثيق وتتبع جميع الاتصالات الهاتفية الصادرة والواردة</p>
+            </div>
+        </div>
+
+        <div class="call-container">
+            <!-- نموذج إضافة مكالمة جديدة -->
+            <div class="add-call-form animate">
+                <div class="form-header">
+                    <h3 class="form-title">إضافة مكالمة جديدة</h3>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label">الاسم (Name)</label>
+                        <input type="text" class="form-input" placeholder="اسم الشخص المتصل/المتلقي">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">الهاتف (Phone)</label>
+                        <input type="tel" class="form-input" placeholder="رقم الهاتف">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">الغرض (Purpose)</label>
+                        <input type="text" class="form-input" placeholder="غرض المكالمة">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">التاريخ (Date)</label>
+                        <input type="date" class="form-input" value="2025-07-18">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">تاريخ المتابعة (Follow Up Date)</label>
+                        <input type="date" class="form-input" value="2025-07-25">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">مدة المكالمة (Call Duration)</label>
+                        <input type="text" class="form-input" placeholder="مثال: 5 دقائق">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">نوع المكالمة</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="call-type" value="incoming" checked>
+                                <span>واردة</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="call-type" value="outgoing">
+                                <span>صادرة</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label class="input-label">الوصف (Description)</label>
+                        <textarea class="form-textarea" placeholder="وصف تفاصيل المكالمة"></textarea>
+                    </div>
+                    
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label class="input-label">الملاحظات (Notes)</label>
+                        <textarea class="form-textarea" placeholder="ملاحظات حول المكالمة"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                    <button class="btn primary-btn">
+                        <i class="fas fa-phone"></i> حفظ المكالمة والعودة
+                    </button>
+                </div>
+            </div>
+            
+            <!-- قائمة المكالمات -->
+            <div class="call-list animate">
+                <div class="list-header">
+                    <h3 class="list-title">قائمة المكالمات</h3>
+                    <div class="filters">
+                        <div class="search-box">
+                            <input type="text" class="search-input" placeholder="ابحث في المكالمات...">
+                            <button class="btn primary-btn">
+                                <i class="fas fa-search"></i> بحث
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <table class="call-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>الاسم</th>
+                            <th>الهاتف</th>
+                            <th>الغرض</th>
+                            <th>المدة</th>
+                            <th>النوع</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>أحمد محمد</td>
+                            <td>+967 777 888 999</td>
+                            <td>استفسار عن الخدمات</td>
+                            <td>5 دقائق</td>
+                            <td><span class="call-type incoming"><i class="fas fa-phone-alt"></i> واردة</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>سارة عبد الله</td>
+                            <td>+967 711 222 333</td>
+                            <td>متابعة طلب</td>
+                            <td>8 دقائق</td>
+                            <td><span class="call-type outgoing"><i class="fas fa-phone-alt"></i> صادرة</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>شركة التقنية المحدودة</td>
+                            <td>+967 733 444 555</td>
+                            <td>تفاوض عقود</td>
+                            <td>15 دقيقة</td>
+                            <td><span class="call-type outgoing"><i class="fas fa-phone-alt"></i> صادرة</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>محمد خالد</td>
+                            <td>+967 755 666 777</td>
+                            <td>دعم فني</td>
+                            <td>12 دقيقة</td>
+                            <td><span class="call-type incoming"><i class="fas fa-phone-alt"></i> واردة</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- دليل المستخدم -->
+        <div class="guide-container animate">
+            <div class="guide-header">
+                <div class="guide-icon">
+                    <i class="fas fa-phone-alt"></i>
+                </div>
+                <h2 class="guide-title">دليل استخدام سجل المكالمات</h2>
+            </div>
+            
+            <div class="guide-content">
+                <div class="guide-text">
+                    <h3 class="guide-section-title">الوصف</h3>
+                    <p>تتيح لك هذه الواجهة تسجيل وتتبع جميع المكالمات الصادرة والواردة التي تتم من قبل أو إلى المؤسسة. يساعد هذا السجل في توثيق الاتصالات الهاتفية، تحديد تفاصيل المكالمة، وتعيين تواريخ للمتابعة، مما يضمن وجود سجل شامل للمراسلات الصوتية.</p>
+                    
+                    <h3 class="guide-section-title">المكونات الرئيسية</h3>
+                    <ul class="guide-list">
+                        <li><strong>نموذج إضافة مكالمة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li><strong>الاسم (Name):</strong> حقل لإدخال اسم الشخص الذي تم الاتصال به أو من قام بالاتصال</li>
+                                <li><strong>الهاتف (Phone):</strong> حقل لإدخال رقم هاتف الطرف الآخر (إلزامي)</li>
+                                <li><strong>الملاحظات (Notes):</strong> حقل لإضافة أي ملاحظات حول المكالمة</li>
+                                <li><strong>التاريخ (Date):</strong> حقل لتحديد تاريخ المكالمة</li>
+                                <li><strong>تاريخ المتابعة (Follow Up Date):</strong> حقل لتحديد تاريخ للمتابعة</li>
+                                <li><strong>مدة المكالمة (Call Duration):</strong> حقل لإدخال مدة المكالمة</li>
+                                <li><strong>الوصف (Description):</strong> حقل نصي كبير لوصف تفاصيل المكالمة</li>
+                                <li><strong>الغرض (Purpose):</strong> حقل لإدخال الغرض من المكالمة</li>
+                                <li><strong>واردة / صادرة (Incoming / Outgoing):</strong> خيارات لتحديد نوع المكالمة</li>
+                            </ul>
+                        </li>
+                        <li><strong>قائمة المكالمات:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li><strong>عوامل التصفية:</strong> شريط البحث للبحث في سجل المكالمات</li>
+                                <li><strong>الجدول الرئيسي:</strong> يعرض قائمة بالمكالمات المسجلة</li>
+                                <li><strong>الأعمدة:</strong> الرقم المسلسل، الاسم، الهاتف، الغرض، المدة، النوع، العمليات</li>
+                                <li><strong>العمليات:</strong> عرض، تعديل، حذف سجلات المكالمات</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <h3 class="guide-section-title">كيفية الاستخدام</h3>
+                    <ul class="guide-list">
+                        <li><strong>إضافة مكالمة جديدة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>املأ الحقول المطلوبة في نموذج إضافة مكالمة (الحقل الإلزامي هو الهاتف)</li>
+                                <li>أدخل الهاتف، الاسم، الملاحظات، مدة المكالمة، الوصف، والغرض</li>
+                                <li>حدد التاريخ وتاريخ المتابعة إذا لزم الأمر</li>
+                                <li>اختر ما إذا كانت المكالمة واردة أم صادرة</li>
+                                <li>انقر على زر "حفظ المكالمة والعودة" لحفظ المكالمة في السجل</li>
+                            </ul>
+                        </li>
+                        <li><strong>الببحث وتصفية المكالمات:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>استخدم شريط البحث في الجزء العلوي الأيسر لتحديد مكالمات معينة</li>
+                                <li>انقر على زر "بحث" لعرض المكالمات التي تطابق معايير البحث</li>
+                            </ul>
+                        </li>
+                        <li><strong>تعديل أو حذف سجل مكالمة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>في قائمة المكالمات، ابحث عن المكالمة التي ترغب في تعديلها أو حذفها</li>
+                                <li>انقر على أيقونة "تعديل" لإجراء التعديلات، ثم احفظ التغييرات</li>
+                                <li>انقر على أيقونة "حذف" لإزالة سجل المكالمة</li>
+                                <li>انقر على أيقونة "عرض" لعرض تفاصيل المكالمة كاملة</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="guide-image">
+                    <img src="https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="توضيح سجل المكالمات">
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <h4 class="tips-title"><i class="fas fa-lightbulb"></i> نصائح وإرشادات</h4>
+                <ul class="tips-list">
+                    <li>سجل تفاصيل المكالمة فور انتهائها لضمان الدقة وتجنب نسيان المعلومات</li>
+                    <li>استخدم حقل "الغرض" وحقل "الوصف" لتوفير سياق واضح للمكالمة، مما يسهل المراجعة لاحقًا</li>
+                    <li>تتبع تواريخ المتابعة لضمان إكمال المهام المتعلقة بالمكالمات في الوقت المحدد</li>
+                    <li>هذا السجل ضروري للمساءلة وتوثيق جميع التفاعلات الهاتفية الهامة</li>
+                    <li>احرص على تسجيل مدة المكالمة لتتبع الوقت المستغرق في الاتصالات</li>
+                    <li>استخدم خاصية البحث للعثور على مكالمات محددة بسرعة</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // تأثيرات الظهور عند التمرير
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.animate').forEach(element => {
+                element.classList.remove('animate');
+                observer.observe(element);
+            });
+            
+            // قائمة الهاتف المحمول
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            // تعيين التاريخ الحالي تلقائياً
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[type="date"]').value = today;
+            
+            // تفاعل أزرار العمليات
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    alert('عرض تفاصيل المكالمة...');
+                });
+            });
+            
+            // حساب مدة المكالمة تلقائياً (وظيفة محاكاة)
+            const startCallBtn = document.createElement('button');
+            startCallBtn.className = 'btn';
+            startCallBtn.innerHTML = '<i class="fas fa-play"></i> بدء المكالمة';
+            startCallBtn.style.marginTop = '10px';
+            
+            const callDurationInput = document.querySelector('input[placeholder="مثال: 5 دقائق"]');
+            callDurationInput.parentNode.appendChild(startCallBtn);
+            
+            startCallBtn.addEventListener('click', function() {
+                if (!this.dataset.started) {
+                    this.innerHTML = '<i class="fas fa-stop"></i> إنهاء المكالمة';
+                    this.dataset.started = true;
+                    this.dataset.startTime = new Date().getTime();
+                } else {
+                    const endTime = new Date().getTime();
+                    const duration = Math.round((endTime - parseInt(this.dataset.startTime)) / 1000);
+                    const minutes = Math.floor(duration / 60);
+                    const seconds = duration % 60;
+                    callDurationInput.value = `${minutes} دقائق ${seconds} ثواني`;
+                    this.innerHTML = '<i class="fas fa-play"></i> بدء المكالمة';
+                    delete this.dataset.started;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
