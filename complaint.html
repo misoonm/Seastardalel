@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل الشكاوى - نظام SeaStar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #00204A;
+            --deep-blue: #0a1930;
+            --light-blue: #007bff;
+            --cyber-blue: #00a8ff;
+            --cyber-green: #0be881;
+            --cyber-purple: #9c88ff;
+            --cyber-red: #ff3f34;
+            --light-gray: #f8f9fa;
+            --dark-gray: #1e272e;
+            --cyber-yellow: #ffdd59;
+            --cyber-orange: #ff9f1a;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+        
+        /* شبكة خلفية */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(0, 168, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(155, 136, 255, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 168, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 168, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .cyber-circle {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-orange);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .pulse {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--cyber-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.7);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 159, 26, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 159, 26, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 159, 26, 0); }
+        }
+        
+        /* التنقل */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--cyber-orange), var(--cyber-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--cyber-orange);
+            background: rgba(255, 159, 26, 0.1);
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger .bar {
+            width: 30px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* القسم البطولي */
+        .hero-section {
+            min-height: 30vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 40px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--cyber-orange), var(--cyber-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+        
+        /* أقسام لوحة التحكم */
+        .dashboard-section {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--cyber-orange), var(--cyber-yellow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--cyber-orange);
+            border-radius: 3px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:hover {
+            background: var(--cyber-orange);
+            color: var(--dark-blue);
+            transform: translateY(-3px);
+        }
+        
+        .btn i {
+            font-size: 0.9rem;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(90deg, var(--cyber-orange), var(--cyber-yellow));
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 159, 26, 0.3);
+        }
+        
+        .primary-btn:hover {
+            box-shadow: 0 10px 25px rgba(255, 159, 26, 0.5);
+        }
+        
+        /* تخطيط سجل الشكاوى */
+        .complaint-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        /* نموذج إضافة شكوى */
+        .add-complaint-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-title {
+            font-size: 1.4rem;
+            color: var(--cyber-orange);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-label.required:after {
+            content: ' *';
+            color: var(--cyber-red);
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--cyber-orange);
+        }
+        
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-label:hover {
+            background: rgba(255, 159, 26, 0.1);
+            border-color: var(--cyber-orange);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* قائمة الشكاوى */
+        .complaint-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .list-title {
+            font-size: 1.4rem;
+            color: var(--cyber-orange);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .filter-input {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .complaint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .complaint-table th {
+            background: rgba(255, 159, 26, 0.1);
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--cyber-orange);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .complaint-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .complaint-table tr:hover {
+            background: rgba(255, 159, 26, 0.05);
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .edit-btn {
+            background: rgba(255, 221, 89, 0.1);
+        }
+        
+        .edit-btn:hover {
+            background: rgba(255, 221, 89, 0.3);
+        }
+        
+        .delete-btn {
+            background: rgba(255, 63, 52, 0.1);
+        }
+        
+        .delete-btn:hover {
+            background: rgba(255, 63, 52, 0.3);
+        }
+        
+        /* دليل المستخدم */
+        .guide-container {
+            background: rgba(255, 159, 26, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-orange);
+            margin-top: 40px;
+            grid-column: span 2;
+        }
+        
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .guide-icon {
+            font-size: 2.5rem;
+            color: var(--cyber-orange);
+        }
+        
+        .guide-title {
+            font-size: 1.8rem;
+            color: var(--cyber-orange);
+        }
+        
+        .guide-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .guide-text {
+            padding: 15px;
+        }
+        
+        .guide-section-title {
+            font-size: 1.3rem;
+            color: var(--cyber-orange);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--cyber-orange);
+        }
+        
+        .guide-list {
+            list-style: none;
+        }
+        
+        .guide-list li {
+            margin-bottom: 15px;
+            padding-right: 20px;
+            position: relative;
+        }
+        
+        .guide-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-orange);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        .guide-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px dashed var(--cyber-orange);
+        }
+        
+        .guide-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tips-section {
+            background: rgba(255, 221, 89, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-yellow);
+            margin-top: 20px;
+        }
+        
+        .tips-title {
+            font-size: 1.3rem;
+            color: var(--cyber-yellow);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tips-title i {
+            font-size: 1.5rem;
+        }
+        
+        .tips-list {
+            padding-right: 20px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .tips-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-yellow);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .status-new {
+            background: rgba(0, 168, 255, 0.2);
+            color: var(--cyber-blue);
+        }
+        
+        .status-in-progress {
+            background: rgba(255, 221, 89, 0.2);
+            color: var(--cyber-yellow);
+        }
+        
+        .status-resolved {
+            background: rgba(11, 232, 129, 0.2);
+            color: var(--cyber-green);
+        }
+        
+        .status-closed {
+            background: rgba(255, 63, 52, 0.2);
+            color: var(--cyber-red);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .complaint-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero-section {
+                padding: 130px 20px 30px;
+            }
+            
+            .hero-title {
+                font-size: 1.7rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-actions {
+                flex-wrap: wrap;
+            }
+            
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="grid-lines"></div>
+    
+    <div class="cyber-circle" style="width: 300px; height: 300px; top: 10%; left: 15%;"></div>
+    <div class="cyber-circle" style="width: 200px; height: 200px; bottom: 15%; right: 10%;"></div>
+    <div class="pulse" style="top: 20%; left: 20%;"></div>
+    <div class="pulse" style="bottom: 25%; right: 25%;"></div>
+    
+    <nav class="navbar">
+        <div class="logo">SeaStar</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="portfolio.html">أعمالنا</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="contact.html">اتصل بنا</a></li>
+            <li><a href="blog.html">المدونة</a></li>
+            <li><a href="seastar-system.html">نظام سيستار</a></li>
+            <li><a href="user-guide.html">دليل المستخدم</a></li>
+            <li><a href="dashboard.html">لوحة التحكم</a></li>
+            <li><a href="visitor-book.html">سجل الزوار</a></li>
+            <li><a href="complaints.html" class="active">الشكاوى</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+    
+    <section class="hero-section">
+        <div class="hero-content animate">
+            <h1 class="hero-title">دليل الشكاوى</h1>
+            <p class="hero-subtitle">تسجيل وتتبع وإدارة الشكاوى الواردة إلى المؤسسة</p>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-header animate">
+            <div>
+                <h2 class="section-title">إدارة الشكاوى</h2>
+                <p class="section-subtitle">تسجيل وتتبع الشكاوى لتحسين الخدمات وحل المشكلات</p>
+            </div>
+        </div>
+
+        <div class="complaint-container">
+            <!-- نموذج إضافة شكوى جديدة -->
+            <div class="add-complaint-form animate">
+                <div class="form-header">
+                    <h3 class="form-title">إضافة شكوى جديدة</h3>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label required">فرع الشكوى</label>
+                        <select class="form-select">
+                            <option value="">اختر الفرع</option>
+                            <option value="finance">القسم المالي</option>
+                            <option value="hr">شؤون الموظفين</option>
+                            <option value="support">الدعم الفني</option>
+                            <option value="academic">الشؤون الأكاديمية</option>
+                            <option value="admin">الإدارة العامة</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">مستلم الشكوى</label>
+                        <select class="form-select">
+                            <option value="">اختر المستلم</option>
+                            <option value="manager">مدير القسم</option>
+                            <option value="supervisor">المشرف العام</option>
+                            <option value="support-team">فريق الدعم</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">مقدم الشكوى</label>
+                        <select class="form-select">
+                            <option value="">اختر النوع</option>
+                            <option value="student">طالب</option>
+                            <option value="parent">ولي أمر</option>
+                            <option value="employee">موظف</option>
+                            <option value="customer">عميل</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">الهاتف</label>
+                        <input type="tel" class="form-input" placeholder="رقم هاتف مقدم الشكوى">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">التاريخ</label>
+                        <input type="date" class="form-input" value="2025-07-18">
+                    </div>
+                    
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label class="input-label required">وصف الشكوى</label>
+                        <textarea class="form-textarea" placeholder="تفاصيل الشكوى بشكل مفصل"></textarea>
+                    </div>
+                    
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label class="input-label">الوصفي</label>
+                        <textarea class="form-textarea" placeholder="وصف إضافي للشكوى"></textarea>
+                    </div>
+                    
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label class="input-label">ملاحظة</label>
+                        <textarea class="form-textarea" placeholder="ملاحظات داخلية حول الشكوى"></textarea>
+                    </div>
+                    
+                    <div class="input-group" style="grid-column: span 2;">
+                        <label class="input-label">المستندات</label>
+                        <div class="file-upload">
+                            <div class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>انقر لرفع المستندات (PDF, DOC, JPG, PNG)</span>
+                                <input type="file" class="file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.txt">
+                            </div>
+                            <small>الحد الأقصى لحجم الملف: 5MB</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                    <button class="btn primary-btn">
+                        <i class="fas fa-save"></i> حفظ الشكوى
+                    </button>
+                </div>
+            </div>
+            
+            <!-- قائمة الشكاوى -->
+            <div class="complaint-list animate">
+                <div class="list-header">
+                    <h3 class="list-title">قائمة الشكاوى</h3>
+                    <div class="filters">
+                        <input type="date" class="filter-input" value="2025-07-18">
+                        <button class="btn primary-btn">
+                            <i class="fas fa-search"></i> بحث
+                        </button>
+                    </div>
+                </div>
+                
+                <table class="complaint-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>مقدم الشكوى</th>
+                            <th>فرع الشكوى</th>
+                            <th>مستلم الشكوى</th>
+                            <th>الهاتف</th>
+                            <th>التاريخ</th>
+                            <th>الحالة</th>
+                            <th>العمليات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>طالب</td>
+                            <td>الشؤون الأكاديمية</td>
+                            <td>مدير القسم</td>
+                            <td>+967 777 888 999</td>
+                            <td>18/07/2025</td>
+                            <td><span class="status-badge status-new"><i class="fas fa-circle"></i> جديد</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>ولي أمر</td>
+                            <td>شؤون الموظفين</td>
+                            <td>المشرف العام</td>
+                            <td>+967 711 222 333</td>
+                            <td>17/07/2025</td>
+                            <td><span class="status-badge status-in-progress"><i class="fas fa-circle"></i> قيد المعالجة</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>موظف</td>
+                            <td>القسم المالي</td>
+                            <td>فريق الدعم</td>
+                            <td>+967 733 444 555</td>
+                            <td>16/07/2025</td>
+                            <td><span class="status-badge status-resolved"><i class="fas fa-circle"></i> تم الحل</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>عميل</td>
+                            <td>الدعم الفني</td>
+                            <td>فريق الدعم</td>
+                            <td>+967 755 666 777</td>
+                            <td>15/07/2025</td>
+                            <td><span class="status-badge status-closed"><i class="fas fa-circle"></i> مغلق</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- دليل المستخدم -->
+        <div class="guide-container animate">
+            <div class="guide-header">
+                <div class="guide-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h2 class="guide-title">دليل استخدام نظام الشكاوى</h2>
+            </div>
+            
+            <div class="guide-content">
+                <div class="guide-text">
+                    <h3 class="guide-section-title">الوصف</h3>
+                    <p>تتيح لك هذه الواجهة تسجيل وتتبع وإدارة الشكاوى الواردة إلى المؤسسة. يمكنك تسجيل تفاصيل الشكوى، تحديد من يقوم بالشكوى، وتعيين فرع أو قسم للتعامل معها، بالإضافة إلى تتبع حالة الشكوى من خلال جدول واضح.</p>
+                    
+                    <h3 class="guide-section-title">المكونات الرئيسية</h3>
+                    <ul class="guide-list">
+                        <li><strong>نموذج إضافة شكوى جديدة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li><strong>فرع الشكوى:</strong> قائمة منسدلة لتحديد الفرع أو القسم الذي تتعلق به الشكوى (إلزامي)</li>
+                                <li><strong>مستلم الشكوى:</strong> قائمة منسدلة لتحديد الموظف أو القسم المسؤول</li>
+                                <li><strong>مقدم الشكوى:</strong> قائمة منسدلة لتحديد الشخص الذي قدم الشكوى (إلزامي)</li>
+                                <li><strong>الهاتف:</strong> حقل لإدخال رقم هاتف مقدم الشكوى</li>
+                                <li><strong>التاريخ:</strong> حقل لتحديد تاريخ تقديم الشكوى</li>
+                                <li><strong>وصف الشكوى:</strong> حقل نصي كبير لإدخال تفاصيل الشكوى (إلزامي)</li>
+                                <li><strong>الوصفي:</strong> حقل نصي إضافي للوصف</li>
+                                <li><strong>الملاحظة:</strong> حقل لإضافة ملاحظات داخلية</li>
+                                <li><strong>المستندات:</strong> خيار لرفع مستندات أو أدلة</li>
+                            </ul>
+                        </li>
+                        <li><strong>قائمة الشكاوى:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li><strong>عوامل التصفية:</strong> التاريخ وزر البحث</li>
+                                <li><strong>الجدول الرئيسي:</strong> يعرض قائمة بالشكاوى المسجلة</li>
+                                <li><strong>الأعمدة:</strong> الرقم المسلسل، مقدم الشكوى، فرع الشكوى، مستلم الشكوى، الهاتف، التاريخ، الحالة، العمليات</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <h3 class="guide-section-title">كيفية الاستخدام</h3>
+                    <ul class="guide-list">
+                        <li><strong>إضافة شكوى جديدة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>املأ الحقول المطلوبة في نموذج إضافة الشكوى (الحقول الإلزامية تحمل علامة *)</li>
+                                <li>اختر فرع الشكوى ومقدم الشكوى من القوائم المنسدلة</li>
+                                <li>أدخل وصفاً مفصلاً للشكوى في الحقل المخصص</li>
+                                <li>لرفع المستندات، انقر على زر "انقر لرفع المستندات"</li>
+                                <li>انقر على زر "حفظ الشكوى" لإضافة البيانات إلى النظام</li>
+                            </ul>
+                        </li>
+                        <li><strong>الببحث وتصفية الشكاوى:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>استخدم حقل "التاريخ" في الجزء العلوي الأيسر لتحديد تاريخ معين</li>
+                                <li>انقر على زر "بحث" لعرض الشكاوى التي يطابق معايير التصفية</li>
+                            </ul>
+                        </li>
+                        <li><strong>تعديل أو حذف شكوى:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>في قائمة الشكاوى، ابحث عن الشكوى التي ترغب في تعديلها أو حذفها</li>
+                                <li>انقر على أيقونة "تعديل" (✎) لإجراء التعديلات ثم احفظ التغييرات</li>
+                                <li>انقر على أيقونة "حذف" (🗑️) لإزالة سجل الشكوى</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="guide-image">
+                    <svg width="400" height="300" viewBox="0 0 400 300">
+                        <rect x="0" y="0" width="400" height="300" fill="#0a1930" rx="15" ry="15" />
+                        <rect x="20" y="20" width="360" height="260" fill="#00204A" rx="10" ry="10" />
+                        <rect x="40" y="50" width="320" height="40" fill="#00a8ff" rx="5" ry="5" />
+                        <rect x="40" y="110" width="150" height="30" fill="#0be881" rx="5" ry="5" />
+                        <rect x="210" y="110" width="150" height="30" fill="#0be881" rx="5" ry="5" />
+                        <rect x="40" y="160" width="320" height="80" fill="#9c88ff" rx="5" ry="5" />
+                        <rect x="40" y="250" width="100" height="30" fill="#ffdd59" rx="5" ry="5" />
+                        <rect x="260" y="250" width="100" height="30" fill="#ff3f34" rx="5" ry="5" />
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <h4 class="tips-title"><i class="fas fa-lightbulb"></i> نصائح وإرشادات</h4>
+                <ul class="tips-list">
+                    <li>سجل جميع الشكاوى فور ورودها لضمان عدم فقدان أي معلومات وتسهيل المتابعة</li>
+                    <li>تأكد من اختيار الفرع والمستلم المناسبين لضمان توجيه الشكوى إلى الجهة الصحيحة</li>
+                    <li>استخدم حقل "وصف الشكوى" لتوفير أكبر قدر من التفاصيل مع أسماء الأشخاص والتواريخ</li>
+                    <li>يمكن أن يساعد تتبع الشكاوى في تحديد المشكلات المتكررة وتحسين الخدمات</li>
+                    <li>قم بتحديث حالة الشكوى بانتظام لضمان متابعتها بشكل صحيح</li>
+                    <li>احرص على رفع المستندات الداعمة للشكوى لتسهيل عملية التحقيق</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // تفاعل رفع الملفات
+            const fileInput = document.querySelector('.file-input');
+            const fileLabel = document.querySelector('.file-label');
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    fileLabel.innerHTML = `<i class="fas fa-file"></i> ${this.files[0].name}`;
+                } else {
+                    fileLabel.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> انقر لرفع المستندات (PDF, DOC, JPG, PNG)';
+                }
+            });
+            
+            // تأثيرات الظهور عند التمرير
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.animate').forEach(element => {
+                element.classList.remove('animate');
+                observer.observe(element);
+            });
+            
+            // قائمة الهاتف المحمول
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            // تعيين التاريخ الحالي تلقائياً
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[type="date"]').value = today;
+        });
+    </script>
+</body>
+</html>
