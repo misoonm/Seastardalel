@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>دليل تعيين مادة - نظام SeaStar</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+--dark-blue: #00204A;
+--deep-blue: #0a1930;
+--light-blue: #007bff;
+--cyber-blue: #00a8ff;
+--cyber-green: #0be881;
+--cyber-purple: #9c88ff;
+--cyber-red: #ff3f34;
+--light-gray: #f8f9fa;
+--dark-gray: #1e272e;
+--cyber-yellow: #ffdd59;
+--cyber-pink: #ff6b81;
+}
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: 'Cairo', sans-serif;
+        background: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
+        color: white;
+        overflow-x: hidden;
+        position: relative;
+        line-height: 1.7;
+    }
+    
+    /* Grid Background */
+    .grid-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 10% 20%, rgba(255, 107, 129, 0.05) 0%, transparent 20%),
+            radial-gradient(circle at 90% 80%, rgba(155, 136, 255, 0.05) 0%, transparent 20%);
+        z-index: -1;
+        opacity: 0.5;
+    }
+    
+    .grid-lines {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 107, 129, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 107, 129, 0.1) 1px, transparent 1px);
+        background-size: 40px 40px;
+        z-index: -1;
+        opacity: 0.3;
+    }
+    
+    .cyber-circle {
+        position: fixed;
+        border-radius: 50%;
+        border: 2px solid var(--cyber-pink);
+        opacity: 0.1;
+        z-index: -1;
+    }
+    
+    .pulse {
+        position: fixed;
+        width: 20px;
+        height: 20px;
+        background: var(--cyber-pink);
+        border-radius: 50%;
+        box-shadow: 0 0 0 0 rgba(255, 107, 129, 0.7);
+        animation: pulse 2s infinite;
+        z-index: -1;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(255, 107, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 107, 129, 0); }
+    }
+    
+    /* Navigation */
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 40px;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .logo {
+        font-size: 1.8rem;
+        font-weight: 900;
+        background: linear-gradient(90deg, var(--cyber-pink), var(--cyber-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .nav-links {
+        display: flex;
+        gap: 25px;
+    }
+    
+    .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 8px 12px;
+        border-radius: 5px;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+        color: var(--cyber-pink);
+        background: rgba(255, 107, 129, 0.1);
+    }
+    
+    .hamburger {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+    }
+    
+    .hamburger .bar {
+        width: 30px;
+        height: 3px;
+        background: white;
+        margin: 3px 0;
+        transition: all 0.3s ease;
+        border-radius: 3px;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        min-height: 30vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 150px 40px 50px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-content {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        z-index: 10;
+    }
+    
+    .hero-title {
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 15px;
+        background: linear-gradient(90deg, var(--cyber-pink), var(--cyber-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.3;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+    }
+    
+    /* Dashboard Section */
+    .dashboard-section {
+        padding: 30px 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    
+    .section-header {
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 900;
+        margin-bottom: 5px;
+        background: linear-gradient(90deg, var(--cyber-pink), var(--cyber-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .section-title:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 80px;
+        height: 3px;
+        background: var(--cyber-pink);
+        border-radius: 3px;
+    }
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.8);
+        max-width: 800px;
+    }
+    
+    /* User Guide */
+    .guide-container {
+        background: rgba(255, 107, 129, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        border: 1px solid var(--cyber-pink);
+        margin-top: 40px;
+    }
+    
+    .guide-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+    
+    .guide-icon {
+        font-size: 2.5rem;
+        color: var(--cyber-pink);
+    }
+    
+    .guide-title {
+        font-size: 1.8rem;
+        color: var(--cyber-pink);
+    }
+    
+    .guide-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+    }
+    
+    .guide-text {
+        padding: 15px;
+    }
+    
+    .guide-section-title {
+        font-size: 1.3rem;
+        color: var(--cyber-pink);
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 2px solid var(--cyber-pink);
+    }
+    
+    .guide-list {
+        list-style: none;
+    }
+    
+    .guide-list li {
+        margin-bottom: 15px;
+        padding-right: 20px;
+        position: relative;
+    }
+    
+    .guide-list li:before {
+        content: '•';
+        position: absolute;
+        right: 0;
+        color: var(--cyber-pink);
+        font-size: 1.5rem;
+        line-height: 0;
+    }
+
+    .guide-list li strong {
+        color: var(--cyber-purple);
+    }
+    
+    .guide-list li ul {
+        padding-right: 20px;
+        margin-top: 10px;
+    }
+
+    .guide-list li ul li:before {
+        content: '-';
+        color: var(--cyber-green);
+    }
+    
+    .guide-image {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        border: 1px dashed var(--cyber-pink);
+    }
+    
+    .guide-image img {
+        max-width: 100%;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .tips-section {
+        background: rgba(156, 136, 255, 0.1);
+        border-radius: 15px;
+        padding: 25px;
+        border: 1px solid var(--cyber-purple);
+        margin-top: 20px;
+    }
+    
+    .tips-title {
+        font-size: 1.3rem;
+        color: var(--cyber-purple);
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .tips-title i {
+        font-size: 1.5rem;
+    }
+    
+    .tips-list {
+        padding-right: 20px;
+    }
+    
+    .tips-list li {
+        margin-bottom: 10px;
+        position: relative;
+        padding-right: 20px;
+    }
+    
+    .tips-list li:before {
+        content: '•';
+        position: absolute;
+        right: 0;
+        color: var(--cyber-purple);
+        font-size: 1.5rem;
+        line-height: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1100px) {
+        .guide-content {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    @media (max-width: 900px) {
+        .navbar {
+            padding: 15px 20px;
+        }
+        
+        .nav-links {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-links.active {
+            display: flex;
+        }
+        
+        .hamburger {
+            display: flex;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.1rem;
+        }
+        
+        .dashboard-section {
+            padding: 20px;
+        }
+    }
+    
+    @media (max-width: 600px) {
+        .hero-section {
+            padding: 130px 20px 30px;
+        }
+        
+        .hero-title {
+            font-size: 1.7rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+        }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .animate {
+        animation: fadeIn 0.8s ease-out;
+    }
+</style>
+
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="grid-lines"></div>
+<div class="cyber-circle" style="width: 300px; height: 300px; top: 10%; left: 15%;"></div>
+<div class="cyber-circle" style="width: 200px; height: 200px; bottom: 15%; right: 10%;"></div>
+<div class="pulse" style="top: 20%; left: 20%;"></div>
+<div class="pulse" style="bottom: 25%; right: 25%;"></div>
+
+<nav class="navbar">
+    <div class="logo">SeaStar</div>
+    <ul class="nav-links">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="services.html">الخدمات</a></li>
+        <li><a href="portfolio.html">أعمالنا</a></li>
+        <li><a href="about.html">من نحن</a></li>
+        <li><a href="contact.html">اتصل بنا</a></li>
+        <li><a href="blog.html">المدونة</a></li>
+        <li><a href="seastar-system.html">نظام سيستار</a></li>
+        <li><a href="user-guide.html" class="active">دليل المستخدم</a></li>
+        <li><a href="dashboard.html">لوحة التحكم</a></li>
+        <li><a href="visitor-book.html">سجل الزوار</a></li>
+        <li><a href="complaints.html">الشكاوى</a></li>
+        <li><a href="inbox.html">البريد الوارد</a></li>
+    </ul>
+    <div class="hamburger">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+</nav>
+
+<section class="hero-section">
+    <div class="hero-content animate">
+        <h1 class="hero-title">دليل تعيين المادة</h1>
+        <p class="hero-subtitle">ربط المواد الدراسية بالمعلمين والفصول والأقسام</p>
+    </div>
+</section>
+
+<section class="dashboard-section">
+    <div class="section-header animate">
+        <div>
+            <h2 class="section-title">2.2.5. تعيين مادة</h2>
+            <p class="section-subtitle">تتيح لك هذه الواجهة ربط المواد الدراسية بمعلمين محددين، وفصول دراسية، وأقسام. هذه الميزة ضرورية لتحديد من يدرس أي مادة في أي فصل وقسم، مما يضمن تنظيمًا فعالًا للمناهج وتوزيع المهام على المعلمين.</p>
+        </div>
+    </div>
+
+    <div class="guide-container animate">
+        <div class="guide-header">
+            <div class="guide-icon">
+                <i class="fas fa-link"></i>
+            </div>
+            <h2 class="guide-title">دليل استخدام تعيين المادة</h2>
+        </div>
+        
+        <div class="guide-content">
+            <div class="guide-text">
+                <h3 class="guide-section-title">المكونات الرئيسية</h3>
+                <ul class="guide-list">
+                    <li><strong>نموذج تعيين المادة (Assign Subject Form - على الجانب الأيمن):</strong>
+                        <ul>
+                            <li><strong>الفصل (Class):</strong> قائمة منسدلة لاختيار الفصل الدراسي الذي سيتم تعيين المادة له. (**حقل إلزامي**).</li>
+                            <li><strong>القسم (Section):</strong> قائمة منسدلة لاختيار القسم داخل الفصل المحدد. (**حقل إلزامي**).</li>
+                            <li><strong>اختيار المعلم (Select Teacher):</strong> قائمة منسدلة لاختيار المعلم الذي سيقوم بتدريس المادة. (**حقل إلزامي**).</li>
+                            <li><strong>اختيار المادة (Select Subject):</strong> قائمة منسدلة لاختيار المادة التي سيتم تعيينها. (**حقل إلزامي**).</li>
+                            <li><strong>زر حفظ تعيين المادة (Save Assign Subject):</strong> لحفظ التعيين الجديد في النظام.</li>
+                        </ul>
+                    </li>
+                    <li><strong>قائمة تعيين المواد (List of Assigned Subjects - على الجانب الأيسر):</strong>
+                        <ul>
+                            <li>يعرض جدولاً بجميع تعيينات المواد الحالية.</li>
+                            <li><strong>الأعمدة تشمل:</strong>
+                                <ul>
+                                    <li>الرقم المسلسل (SL): رقم تسلسلي للتعيين.</li>
+                                    <li>الفصل (Class): الفصل الذي تم فيه تعيين المادة.</li>
+                                    <li>القسم (Section): القسم داخل الفصل.</li>
+                                    <li>المعلم (Teacher): اسم المعلم المعين للمادة.</li>
+                                    <li>المادة (Subject): اسم المادة المعينة.</li>
+                                    <li>الإجراءات (Actions): يوفر أيقونات لإجراءات مثل التعديل أو الحذف.
+                                        <ul>
+                                            <li>أيقونة تعديل (قلم): لتعديل تفاصيل التعيين.</li>
+                                            <li>أيقونة حذف (سلة مهملات): لحذف التعيين.</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h3 class="guide-section-title">كيفية الاستخدام</h3>
+                <ul class="guide-list">
+                    <li><strong>تعيين مادة جديدة:</strong>
+                        <ul>
+                            <li>على الجانب الأيمن من الشاشة، في نموذج **"تعيين المادة"**، اختر **"الفصل"**، **"القسم"**، **"المعلم"**، و**"المادة"** من القوائم المنسدلة. جميع هذه الحقول إلزامية.</li>
+                            <li>انقر على زر **"حفظ تعيين المادة"** لإضافة التعيين الجديد.</li>
+                        </ul>
+                    </li>
+                    <li><strong>تعديل تعيين مادة موجود:</strong>
+                        <ul>
+                            <li>في **"قائمة تعيين المواد"** على الجانب الأيسر، ابحث عن التعيين الذي ترغب في تعديله.</li>
+                            <li>انقر على أيقونة **"تعديل"** (على شكل قلم) بجانب التعيين. ستظهر تفاصيل التعيين في نموذج **"تعيين المادة"** على الجانب الأيمن.</li>
+                            <li>قم بإجراء التعديلات اللازمة (مثلاً، تغيير المعلم أو المادة).</li>
+                            <li>انقر على زر **"حفظ تعيين المادة"** لتحديث التغييرات.</li>
+                        </ul>
+                    </li>
+                    <li><strong>حذف تعيين مادة:</strong>
+                        <ul>
+                            <li>في **"قائمة تعيين المواد"** على الجانب الأيسر، ابحث عن التعيين الذي ترغب في حذفه.</li>
+                            <li>انقر على أيقونة **"حذف"** (على شكل سلة مهملات) بجانب التعيين. سيُطلب منك تأكيد عملية الحذف.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="guide-image">
+                <img src="[https://raw.githubusercontent.com/misoonm/Seastardalel/main/206.png](https://raw.githubusercontent.com/misoonm/Seastardalel/main/206.png)" alt="نموذج تعيين مادة">
+            </div>
+        </div>
+        
+        <div class="tips-section">
+            <h4 class="tips-title"><i class="fas fa-lightbulb"></i> نصائح وإرشادات</h4>
+            <ul class="tips-list">
+                <li>تأكد من **دقة التعيينات** لتجنب أي ارتباك في جداول الحصص أو مسؤوليات المعلمين.</li>
+                <li>يمكنك استخدام هذه الواجهة لإدارة **التغييرات الموسمية** في تعيينات المواد أو لتصحيح الأخطاء بسرعة.</li>
+                <li>يوفر هذا السجل **نظرة عامة واضحة** على توزيع المواد عبر الفصول والأقسام والمعلمين.</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+        
+        document.querySelectorAll('.animate').forEach(element => {
+            element.classList.remove('animate');
+            observer.observe(element);
+        });
+        
+        // Mobile navigation toggle
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+    });
+</script>
+
+</body>
+</html>
+
