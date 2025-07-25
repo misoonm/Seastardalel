@@ -1,1 +1,1195 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة طالب - نظام SeaStar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #00204A;
+            --deep-blue: #0a1930;
+            --cyber-blue: #00a8ff;
+            --cyber-green: #0be881;
+            --cyber-purple: #8e44ad;
+            --cyber-indigo: #6a11cb;
+            --cyber-red: #ff3f34;
+            --light-gray: #f8f9fa;
+            --dark-gray: #1e272e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+        
+        /* شبكة خلفية */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(142, 68, 173, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(106, 17, 203, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(142, 68, 173, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(142, 68, 173, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .cyber-circle {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-purple);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .pulse {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--cyber-purple);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(142, 68, 173, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+        }
+        
+        /* التنقل */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--cyber-purple);
+            background: rgba(142, 68, 173, 0.1);
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger .bar {
+            width: 30px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* القسم البطولي */
+        .hero-section {
+            min-height: 30vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 40px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+        
+        /* أقسام لوحة التحكم */
+        .dashboard-section {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--cyber-purple);
+            border-radius: 3px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+        }
+        
+        /* نظام التبويبات */
+        .tabs-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tabs-header {
+            display: flex;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-btn {
+            padding: 15px 25px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab-btn:hover {
+            color: var(--cyber-purple);
+        }
+        
+        .tab-btn.active {
+            color: var(--cyber-purple);
+            background: rgba(142, 68, 173, 0.1);
+        }
+        
+        .tab-btn.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--cyber-purple);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+        }
+        
+        .input-label.required:after {
+            content: ' *';
+            color: var(--cyber-red);
+            margin-right: 5px;
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--cyber-purple);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background: var(--cyber-purple);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .btn i {
+            font-size: 0.9rem;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            color: white;
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+        
+        .primary-btn:hover {
+            box-shadow: 0 10px 25px rgba(142, 68, 173, 0.5);
+        }
+        
+        .secondary-btn {
+            background: rgba(0, 168, 255, 0.1);
+            border-color: var(--cyber-blue);
+        }
+        
+        .secondary-btn:hover {
+            background: var(--cyber-blue);
+        }
+        
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .file-upload-btn {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload-btn:hover {
+            background: rgba(142, 68, 173, 0.1);
+            color: var(--cyber-purple);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+        }
+        
+        /* دليل المستخدم */
+        .guide-container {
+            background: rgba(142, 68, 173, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-purple);
+            margin-top: 40px;
+        }
+        
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .guide-icon {
+            font-size: 2.5rem;
+            color: var(--cyber-purple);
+        }
+        
+        .guide-title {
+            font-size: 1.8rem;
+            color: var(--cyber-purple);
+        }
+        
+        .guide-text {
+            padding: 15px;
+        }
+        
+        .guide-section-title {
+            font-size: 1.3rem;
+            color: var(--cyber-purple);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--cyber-purple);
+        }
+        
+        .guide-list {
+            list-style: none;
+            padding-right: 20px;
+        }
+        
+        .guide-list li {
+            margin-bottom: 15px;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .guide-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-purple);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        .tips-section {
+            background: rgba(106, 17, 203, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-indigo);
+            margin-top: 20px;
+        }
+        
+        .tips-title {
+            font-size: 1.3rem;
+            color: var(--cyber-indigo);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tips-title i {
+            font-size: 1.5rem;
+        }
+        
+        .tips-list {
+            padding-right: 20px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .tips-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-indigo);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+            }
+            
+            .tabs-header {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                width: 100%;
+                text-align: right;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero-section {
+                padding: 130px 20px 30px;
+            }
+            
+            .hero-title {
+                font-size: 1.7rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="grid-lines"></div>
+    
+    <div class="cyber-circle" style="width: 300px; height: 300px; top: 10%; left: 15%;"></div>
+    <div class="cyber-circle" style="width: 200px; height: 200px; bottom: 15%; right: 10%;"></div>
+    <div class="pulse" style="top: 20%; left: 20%;"></div>
+    <div class="pulse" style="bottom: 25%; right: 25%;"></div>
+    
+    <nav class="navbar">
+        <div class="logo">SeaStar</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="portfolio.html">أعمالنا</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="contact.html">اتصل بنا</a></li>
+            <li><a href="blog.html">المدونة</a></li>
+            <li><a href="seastar-system.html">نظام سيستار</a></li>
+            <li><a href="user-guide.html">دليل المستخدم</a></li>
+            <li><a href="dashboard.html">لوحة التحكم</a></li>
+            <li><a href="student-admission.html" class="active">إضافة طالب</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+    
+    <section class="hero-section">
+        <div class="hero-content animate">
+            <h1 class="hero-title">إضافة طالب جديد</h1>
+            <p class="hero-subtitle">تسجيل الطلاب الجدد في النظام التعليمي</p>
+        </div>
+    </section>
 
+    <section class="dashboard-section">
+        <div class="section-header animate">
+            <div>
+                <h2 class="section-title">استمارة قبول الطلاب</h2>
+                <p class="section-subtitle">املأ المعلومات المطلوبة لتسجيل طالب جديد في النظام</p>
+            </div>
+            <button class="btn secondary-btn">
+                <i class="fas fa-search"></i> استعراض الطلاب
+            </button>
+        </div>
+
+        <div class="tabs-container animate">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="personal">معلومات شخصية</button>
+                <button class="tab-btn" data-tab="academic">معلومات أكاديمية</button>
+                <button class="tab-btn" data-tab="guardian">معلومات ولي الأمر</button>
+                <button class="tab-btn" data-tab="dormitory">معلومات السكن</button>
+                <button class="tab-btn" data-tab="previous">المدرسة السابقة</button>
+                <button class="tab-btn" data-tab="bank">معلومات البنك</button>
+                <button class="tab-btn" data-tab="documents">المستندات المرفقة</button>
+            </div>
+            
+            <!-- معلومات شخصية -->
+            <div class="tab-content active" id="personal">
+                <h3 class="form-title">المعلومات الشخصية للطالب</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label required">الاسم الأول</label>
+                        <input type="text" class="form-input" placeholder="أدخل الاسم الأول">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">الاسم الأخير</label>
+                        <input type="text" class="form-input" placeholder="أدخل الاسم الأخير">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">تاريخ الميلاد</label>
+                        <input type="date" class="form-input">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">الجنس</label>
+                        <select class="form-select">
+                            <option value="">اختر الجنس</option>
+                            <option value="male">ذكر</option>
+                            <option value="female">أنثى</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">فصيلة الدم</label>
+                        <select class="form-select">
+                            <option value="">اختر فصيلة الدم</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">تفاصيل الانتماء</label>
+                        <textarea class="form-textarea" placeholder="أدخل تفاصيل الانتماء"></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">صورة الطالب</label>
+                        <div class="file-upload">
+                            <input type="file" id="student-photo" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('student-photo').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل الصورة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- معلومات أكاديمية -->
+            <div class="tab-content" id="academic">
+                <h3 class="form-title">المعلومات الأكاديمية للطالب</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label required">الفصل</label>
+                        <select class="form-select">
+                            <option value="">اختر الفصل الدراسي</option>
+                            <option value="1">الصف الأول</option>
+                            <option value="2">الصف الثاني</option>
+                            <option value="3">الصف الثالث</option>
+                            <option value="4">الصف الرابع</option>
+                            <option value="5">الصف الخامس</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">القسم</label>
+                        <select class="form-select">
+                            <option value="">اختر القسم</option>
+                            <option value="A">القسم أ</option>
+                            <option value="B">القسم ب</option>
+                            <option value="C">القسم ج</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">رقم القبول</label>
+                        <input type="text" class="form-input" placeholder="أدخل رقم القبول">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">تاريخ القبول</label>
+                        <input type="date" class="form-input" value="">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">نوع الرسوم</label>
+                        <select class="form-select">
+                            <option value="">اختر نوع الرسوم</option>
+                            <option value="full">رسوم كاملة</option>
+                            <option value="partial">رسوم جزئية</option>
+                            <option value="scholarship">منحة دراسية</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">المجموعة</label>
+                        <select class="form-select">
+                            <option value="">اختر المجموعة</option>
+                            <option value="science">العلمية</option>
+                            <option value="literary">الأدبية</option>
+                            <option value="technical">التقنية</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- معلومات ولي الأمر -->
+            <div class="tab-content" id="guardian">
+                <h3 class="form-title">معلومات ولي الأمر والوصي</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label required">الاسم الأول لولي الأمر</label>
+                        <input type="text" class="form-input" placeholder="أدخل الاسم الأول">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">الاسم الأخير لولي الأمر</label>
+                        <input type="text" class="form-input" placeholder="أدخل الاسم الأخير">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">صورة ولي الأمر</label>
+                        <div class="file-upload">
+                            <input type="file" id="guardian-photo" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('guardian-photo').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل الصورة
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label required">العلاقة مع الطالب</label>
+                        <div class="checkbox-group">
+                            <input type="radio" name="relation" id="father" value="father">
+                            <label for="father">أب</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="radio" name="relation" id="mother" value="mother">
+                            <label for="mother">أم</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="radio" name="relation" id="other" value="other">
+                            <label for="other">آخر</label>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">صورة الأب</label>
+                        <div class="file-upload">
+                            <input type="file" id="father-photo" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('father-photo').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل الصورة
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">صورة الأم</label>
+                        <div class="file-upload">
+                            <input type="file" id="mother-photo" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('mother-photo').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل الصورة
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رقم هاتف الأب</label>
+                        <input type="tel" class="form-input" placeholder="أدخل رقم الهاتف">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رقم هاتف الأم</label>
+                        <input type="tel" class="form-input" placeholder="أدخل رقم الهاتف">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">تفاصيل أخرى لولي الأمر</label>
+                        <textarea class="form-textarea" placeholder="أدخل التفاصيل الإضافية"></textarea>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رقم هاتف ولي الأمر</label>
+                        <input type="tel" class="form-input" placeholder="أدخل رقم الهاتف">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">عنوان ولي الأمر</label>
+                        <textarea class="form-textarea" placeholder="أدخل العنوان الكامل"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- معلومات السكن -->
+            <div class="tab-content" id="dormitory">
+                <h3 class="form-title">معلومات السكن الداخلي</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label">الفئة</label>
+                        <select class="form-select">
+                            <option value="">اختر فئة السكن</option>
+                            <option value="standard">قسم عادي</option>
+                            <option value="premium">قسم مميز</option>
+                            <option value="vip">قسم VIP</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رقم الغرفة</label>
+                        <select class="form-select">
+                            <option value="">اختر رقم الغرفة</option>
+                            <option value="101">101</option>
+                            <option value="102">102</option>
+                            <option value="103">103</option>
+                            <option value="201">201</option>
+                            <option value="202">202</option>
+                        </select>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">اسم المبنى</label>
+                        <input type="text" class="form-input" placeholder="أدخل اسم المبنى">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رقم السرير</label>
+                        <input type="text" class="form-input" placeholder="أدخل رقم السرير">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">تخصيص سرير</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="allocate-bed">
+                            <label for="allocate-bed">تخصيص سرير للطالب</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- معلومات المدرسة السابقة -->
+            <div class="tab-content" id="previous">
+                <h3 class="form-title">معلومات المدرسة السابقة</h3>
+                <div class="form-grid">
+                    <div class="input-group" style="grid-column: 1 / -1;">
+                        <label class="input-label">تفاصيل المدرسة السابقة</label>
+                        <textarea class="form-textarea" placeholder="أدخل تفاصيل المدرسة السابقة للطالب"></textarea>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- معلومات البنك -->
+            <div class="tab-content" id="bank">
+                <h3 class="form-title">معلومات الحساب البنكي</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label">اسم البنك</label>
+                        <input type="text" class="form-input" placeholder="أدخل اسم البنك">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رقم الحساب</label>
+                        <input type="text" class="form-input" placeholder="أدخل رقم الحساب">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">رمز IFSC</label>
+                        <input type="text" class="form-input" placeholder="أدخل رمز IFSC">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- المستندات المرفقة -->
+            <div class="tab-content" id="documents">
+                <h3 class="form-title">المستندات المرفقة</h3>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label">المستند المرفق 01</label>
+                        <div class="file-upload">
+                            <input type="file" id="doc1" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('doc1').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل المستند
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">المستند المرفق 02</label>
+                        <div class="file-upload">
+                            <input type="file" id="doc2" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('doc2').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل المستند
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">المستند المرفق 03</label>
+                        <div class="file-upload">
+                            <input type="file" id="doc3" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('doc3').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل المستند
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <label class="input-label">المستند المرفق 04</label>
+                        <div class="file-upload">
+                            <input type="file" id="doc4" style="display: none;">
+                            <button class="file-upload-btn" onclick="document.getElementById('doc4').click()">
+                                <i class="fas fa-upload"></i> تصفح لتحميل المستند
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- أزرار التنقل والإجراءات -->
+            <div class="form-actions">
+                <button class="btn" id="reset-btn">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+                <button class="btn" id="add-more-btn">
+                    <i class="fas fa-plus"></i> إضافة المزيد
+                </button>
+                <button class="btn primary-btn" id="save-exit-btn">
+                    <i class="fas fa-save"></i> حفظ وإغلاق
+                </button>
+                <button class="btn primary-btn" id="save-btn">
+                    <i class="fas fa-save"></i> حفظ الطالب
+                </button>
+            </div>
+        </div>
+        
+        <!-- دليل المستخدم -->
+        <div class="guide-container animate">
+            <div class="guide-header">
+                <div class="guide-icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <h2 class="guide-title">دليل إضافة طالب جديد</h2>
+            </div>
+            
+            <div class="guide-text">
+                <h3 class="guide-section-title">الوصف</h3>
+                <p>تتيح لك هذه الواجهة إضافة معلومات الطلاب الجدد إلى النظام. تتكون الواجهة من عدة علامات تبويب لتنظيم البيانات الشخصية والأكاديمية والاتصال ومعلومات ولي الأمر ومعلومات السكن والسجلات السابقة للطالب.</p>
+                
+                <h3 class="guide-section-title">كيفية الاستخدام</h3>
+                <ul class="guide-list">
+                    <li><strong>بدء عملية القبول:</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>انقر على تبويب "إضافة طالب" في القائمة الجانبية أو من التنقل الأفقي أعلى الشاشة</li>
+                        </ul>
+                    </li>
+                    <li><strong>إدخال المعلومات الشخصية:</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>املأ الحقول الإلزامية مثل الاسم الأول، الاسم الأخير، تاريخ الميلاد، والجنس</li>
+                            <li>قم بتحميل صورة الطالب إذا لزم الأمر</li>
+                            <li>انتقل إلى علامة التبويب التالية (معلومات أكاديمية)</li>
+                        </ul>
+                    </li>
+                    <li><strong>إدخال المعلومات الأكاديمية:</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>اختر الفصل والقسم الذي سينضم إليه الطالب</li>
+                            <li>أدخل رقم القبول وتاريخ القبول</li>
+                            <li>حدد نوع الرسوم والمجموعة</li>
+                            <li>انتقل إلى علامة التبويب التالية</li>
+                        </ul>
+                    </li>
+                    <li><strong>إدخال معلومات ولي الأمر والوصي:</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>أدخل معلومات ولي الأمر الأساسية مثل الاسم وعلاقته بالطالب</li>
+                            <li>قم بتحميل صور الأب والأم وولي الأمر إذا لزم الأمر</li>
+                            <li>املأ تفاصيل الاتصال والعنوان</li>
+                            <li>انتقل إلى علامة التبويب التالية</li>
+                        </ul>
+                    </li>
+                    <li><strong>إدخال معلومات السكن (إذا كان الطالب سيقيم في السكن الداخلي):</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>اختر فئة السكن، رقم الغرفة، واسم المبنى</li>
+                            <li>حدد ما إذا كنت ترغب في تخصيص سرير</li>
+                            <li>انتقل إلى علامة التبويب التالية</li>
+                        </ul>
+                    </li>
+                    <li><strong>إدخال معلومات المدرسة السابقة (إذا كان الطالب قد درس في مدرسة أخرى):</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>أدخل أي تفاصيل ذات صلة بالمدرسة السابقة للطالب</li>
+                            <li>انتقل إلى علامة التبويب التالية</li>
+                        </ul>
+                    </li>
+                    <li><strong>إدخال معلومات البنك والمرفقات (اختياري):</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>املأ معلومات الحساب البنكي إذا لزم الأمر</li>
+                            <li>قم بتحميل أي مستندات داعمة باستخدام أزرار "تصفح"</li>
+                        </ul>
+                    </li>
+                    <li><strong>حفظ معلومات الطالب:</strong>
+                        <ul style="padding-right: 20px; margin-top: 10px;">
+                            <li>بعد إدخال جميع المعلومات المطلوبة، انقر على زر "حفظ الطالب" أو "حفظ وإغلاق" لإضافة الطالب إلى النظام</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="tips-section">
+                <h4 class="tips-title"><i class="fas fa-lightbulb"></i> نصائح وإرشادات</h4>
+                <ul class="tips-list">
+                    <li>تأكد من إدخال جميع الحقول الإلزامية التي يشار إليها بعلامة النجمة (*)</li>
+                    <li>قم بمراجعة جميع المعلومات المدخلة بعناية قبل الحفظ لتجنب الأخطاء</li>
+                    <li>استخدم علامات التبويب لتنظيم عملية إدخال البيانات وتتبع التقدم</li>
+                    <li>تأكد من أن الصور المرفوعة واضحة وذات حجم مناسب</li>
+                    <li>استخدم زر "استعراض الطلاب" للتحقق من عدم تكرار تسجيل الطالب</li>
+                    <li>استخدم زر "إضافة المزيد" لإضافة طلاب متعددين دون الحاجة إلى الخروج من النموذج</li>
+                    <li>احرص على تحديث تاريخ القبول تلقائيًا لتسجيل التاريخ الصحيح</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // تأثيرات الظهور عند التمرير
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.animate').forEach(element => {
+                element.classList.remove('animate');
+                observer.observe(element);
+            });
+            
+            // قائمة الهاتف المحمول
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            // نظام التبويبات
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // إزالة النشاط من جميع الأزرار والمحتويات
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // إضافة النشاط للعنصر المحدد
+                    btn.classList.add('active');
+                    const tabId = btn.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+            
+            // تعيين تاريخ اليوم كتاريخ قبول افتراضي
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[type="date"][placeholder="تاريخ القبول"]').value = today;
+            
+            // زر الإلغاء
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                if (confirm('هل أنت متأكد من رغبتك في إلغاء جميع البيانات المدخلة؟')) {
+                    document.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(input => {
+                        if (input.type !== 'file') {
+                            input.value = '';
+                        }
+                    });
+                    
+                    // إعادة تعيين تاريخ القبول
+                    document.querySelector('input[type="date"][placeholder="تاريخ القبول"]').value = today;
+                    
+                    // إعادة إلى التبويب الأول
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    tabBtns[0].classList.add('active');
+                    tabContents[0].classList.add('active');
+                }
+            });
+            
+            // زر حفظ الطالب
+            document.getElementById('save-btn').addEventListener('click', function() {
+                // هنا يمكنك إضافة التحقق من الحقول الإلزامية
+                alert('تم حفظ معلومات الطالب بنجاح!');
+            });
+            
+            // زر حفظ وإغلاق
+            document.getElementById('save-exit-btn').addEventListener('click', function() {
+                // هنا يمكنك إضافة التحقق من الحقول الإلزامية
+                alert('تم حفظ معلومات الطالب بنجاح وسيتم إغلاق النموذج!');
+                // إعادة تعيين النموذج
+                document.getElementById('reset-btn').click();
+            });
+            
+            // زر إضافة المزيد
+            document.getElementById('add-more-btn').addEventListener('click', function() {
+                // هنا يمكنك إضافة التحقق من الحقول الإلزامية
+                alert('تم حفظ الطالب الحالي وتم إعداد النموذج لإضافة طالب جديد');
+                // إعادة تعيين النموذج مع الاحتفاظ ببعض الإعدادات
+                document.querySelectorAll('.form-input:not([type="date"]), .form-textarea').forEach(input => {
+                    input.value = '';
+                });
+                
+                // إعادة إلى التبويب الأول
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                tabBtns[0].classList.add('active');
+                tabContents[0].classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
