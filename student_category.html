@@ -1,1 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فئة الطالب - نظام SeaStar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --dark-blue: #00204A;
+            --deep-blue: #0a1930;
+            --cyber-blue: #00a8ff;
+            --cyber-green: #0be881;
+            --cyber-purple: #8e44ad;
+            --cyber-indigo: #6a11cb;
+            --cyber-red: #ff3f34;
+            --light-gray: #f8f9fa;
+            --dark-gray: #1e272e;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--deep-blue), var(--dark-blue));
+            color: white;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.7;
+        }
+        
+        /* شبكة خلفية */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(142, 68, 173, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(106, 17, 203, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .grid-lines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(142, 68, 173, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(142, 68, 173, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .cyber-circle {
+            position: fixed;
+            border-radius: 50%;
+            border: 2px solid var(--cyber-purple);
+            opacity: 0.1;
+            z-index: -1;
+        }
+        
+        .pulse {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--cyber-purple);
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7);
+            animation: pulse 2s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(142, 68, 173, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(142, 68, 173, 0); }
+        }
+        
+        /* التنقل */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--cyber-purple);
+            background: rgba(142, 68, 173, 0.1);
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger .bar {
+            width: 30px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: all 0.3s ease;
+            border-radius: 3px;
+        }
+        
+        /* القسم البطولي */
+        .hero-section {
+            min-height: 30vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 150px 40px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.3;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+        
+        /* أقسام لوحة التحكم */
+        .dashboard-section {
+            padding: 30px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 80px;
+            height: 3px;
+            background: var(--cyber-purple);
+            border-radius: 3px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 800px;
+        }
+        
+        .section-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn:hover {
+            background: var(--cyber-purple);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .btn i {
+            font-size: 0.9rem;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(90deg, var(--cyber-indigo), var(--cyber-purple));
+            color: white;
+            box-shadow: 0 5px 15px rgba(142, 68, 173, 0.3);
+        }
+        
+        .primary-btn:hover {
+            box-shadow: 0 10px 25px rgba(142, 68, 173, 0.5);
+        }
+        
+        /* تخطيط إدارة الفئات */
+        .student-category-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        /* نموذج إضافة فئة */
+        .add-category-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-title {
+            font-size: 1.4rem;
+            color: var(--cyber-purple);
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .input-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .input-label.required:after {
+            content: ' *';
+            color: var(--cyber-red);
+        }
+        
+        .form-input, .form-select, .form-textarea {
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+        }
+        
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--cyber-purple);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        /* جدول فئات الطلاب */
+        .categories-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .table-title {
+            font-size: 1.4rem;
+            color: var(--cyber-purple);
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.07);
+            border-radius: 8px;
+            padding: 5px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px;
+            width: 200px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+        }
+        
+        .search-box i {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .category-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .category-table th {
+            text-align: right;
+            padding: 12px 15px;
+            background: rgba(142, 68, 173, 0.2);
+            color: var(--cyber-purple);
+            font-weight: 700;
+        }
+        
+        .category-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .category-table tr:hover {
+            background: rgba(142, 68, 173, 0.1);
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .edit-btn {
+            background: rgba(255, 221, 89, 0.1);
+        }
+        
+        .edit-btn:hover {
+            background: rgba(255, 221, 89, 0.3);
+        }
+        
+        .delete-btn {
+            background: rgba(255, 63, 52, 0.1);
+        }
+        
+        .delete-btn:hover {
+            background: rgba(255, 63, 52, 0.3);
+        }
+        
+        /* دليل المستخدم */
+        .guide-container {
+            background: rgba(142, 68, 173, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-purple);
+            margin-top: 40px;
+            grid-column: span 2;
+        }
+        
+        .guide-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .guide-icon {
+            font-size: 2.5rem;
+            color: var(--cyber-purple);
+        }
+        
+        .guide-title {
+            font-size: 1.8rem;
+            color: var(--cyber-purple);
+        }
+        
+        .guide-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .guide-text {
+            padding: 15px;
+        }
+        
+        .guide-section-title {
+            font-size: 1.3rem;
+            color: var(--cyber-purple);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--cyber-purple);
+        }
+        
+        .guide-list {
+            list-style: none;
+        }
+        
+        .guide-list li {
+            margin-bottom: 15px;
+            padding-right: 20px;
+            position: relative;
+        }
+        
+        .guide-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-purple);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        .guide-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px dashed var(--cyber-purple);
+        }
+        
+        .guide-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tips-section {
+            background: rgba(106, 17, 203, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--cyber-indigo);
+            margin-top: 20px;
+        }
+        
+        .tips-title {
+            font-size: 1.3rem;
+            color: var(--cyber-indigo);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tips-title i {
+            font-size: 1.5rem;
+        }
+        
+        .tips-list {
+            padding-right: 20px;
+        }
+        
+        .tips-list li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-right: 20px;
+        }
+        
+        .tips-list li:before {
+            content: '•';
+            position: absolute;
+            right: 0;
+            color: var(--cyber-indigo);
+            font-size: 1.5rem;
+            line-height: 0;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .student-category-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .guide-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 15px 20px;
+            }
+            
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                width: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .hero-section {
+                padding: 130px 20px 30px;
+            }
+            
+            .hero-title {
+                font-size: 1.7rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .section-actions {
+                flex-wrap: wrap;
+            }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate {
+            animation: fadeIn 0.8s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="grid-lines"></div>
+    
+    <div class="cyber-circle" style="width: 300px; height: 300px; top: 10%; left: 15%;"></div>
+    <div class="cyber-circle" style="width: 200px; height: 200px; bottom: 15%; right: 10%;"></div>
+    <div class="pulse" style="top: 20%; left: 20%;"></div>
+    <div class="pulse" style="bottom: 25%; right: 25%;"></div>
+    
+    <nav class="navbar">
+        <div class="logo">SeaStar</div>
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="services.html">الخدمات</a></li>
+            <li><a href="portfolio.html">أعمالنا</a></li>
+            <li><a href="about.html">من نحن</a></li>
+            <li><a href="contact.html">اتصل بنا</a></li>
+            <li><a href="blog.html">المدونة</a></li>
+            <li><a href="seastar-system.html">نظام سيستار</a></li>
+            <li><a href="user-guide.html">دليل المستخدم</a></li>
+            <li><a href="dashboard.html">لوحة التحكم</a></li>
+            <li><a href="student-category.html" class="active">فئة الطالب</a></li>
+        </ul>
+        <div class="hamburger">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </nav>
+    
+    <section class="hero-section">
+        <div class="hero-content animate">
+            <h1 class="hero-title">إدارة فئات الطلاب</h1>
+            <p class="hero-subtitle">تصنيف الطلاب وتنظيمهم لأغراض إدارية وأكاديمية</p>
+        </div>
+    </section>
 
+    <section class="dashboard-section">
+        <div class="section-header animate">
+            <div>
+                <h2 class="section-title">فئة الطالب</h2>
+                <p class="section-subtitle">إدارة فئات الطلاب المختلفة في المؤسسة التعليمية</p>
+            </div>
+        </div>
+
+        <div class="student-category-container">
+            <!-- نموذج إضافة فئة الطالب -->
+            <div class="add-category-form animate">
+                <div class="form-header">
+                    <h3 class="form-title">إضافة فئة طالب</h3>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label class="input-label required">اسم الفئة</label>
+                        <input type="text" class="form-input" id="category-name" placeholder="أدخل اسم الفئة الجديدة">
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn" id="reset-btn">
+                        <i class="fas fa-times"></i> إلغاء
+                    </button>
+                    <button class="btn primary-btn" id="save-btn">
+                        <i class="fas fa-save"></i> حفظ الفئة
+                    </button>
+                </div>
+            </div>
+            
+            <!-- قائمة فئات الطلاب -->
+            <div class="categories-table animate">
+                <div class="table-header">
+                    <h3 class="table-title">قائمة فئات الطلاب</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="ابحث عن فئة...">
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="category-table">
+                        <thead>
+                            <tr>
+                                <th width="10%">الرقم</th>
+                                <th width="70%">اسم الفئة</th>
+                                <th width="20%">الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>طلاب جدد</td>
+                                <td>
+                                    <div class="item-actions">
+                                        <button class="action-btn edit-btn" data-id="1"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-btn" data-id="1"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>طلاب قدامى</td>
+                                <td>
+                                    <div class="item-actions">
+                                        <button class="action-btn edit-btn" data-id="2"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-btn" data-id="2"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>طلاب متفوقين</td>
+                                <td>
+                                    <div class="item-actions">
+                                        <button class="action-btn edit-btn" data-id="3"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-btn" data-id="3"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>طلاب منح دراسية</td>
+                                <td>
+                                    <div class="item-actions">
+                                        <button class="action-btn edit-btn" data-id="4"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-btn" data-id="4"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>طلاب متميزين</td>
+                                <td>
+                                    <div class="item-actions">
+                                        <button class="action-btn edit-btn" data-id="5"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-btn" data-id="5"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>طلاب مسجلين حديثاً</td>
+                                <td>
+                                    <div class="item-actions">
+                                        <button class="action-btn edit-btn" data-id="6"><i class="fas fa-edit"></i></button>
+                                        <button class="action-btn delete-btn" data-id="6"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- دليل المستخدم -->
+        <div class="guide-container animate">
+            <div class="guide-header">
+                <div class="guide-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="guide-title">دليل إدارة فئات الطلاب</h2>
+            </div>
+            
+            <div class="guide-content">
+                <div class="guide-text">
+                    <h3 class="guide-section-title">الوصف</h3>
+                    <p>تتيح لك هذه الواجهة إدارة فئات الطلاب المختلفة في المؤسسة التعليمية. يمكنك إضافة فئات جديدة (مثل "طلاب جدد"، "طلاب قدامى"، "طلاب متفوقين" إلخ)، وتعديل أسمائها، أو حذفها. هذا يساعد في تصنيف الطلاب وتنظيمهم لأغراض إدارية أو أكاديمية.</p>
+                    
+                    <h3 class="guide-section-title">المكونات الرئيسية</h3>
+                    <ul class="guide-list">
+                        <li><strong>نموذج إضافة فئة طالب:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li><strong>الاسم:</strong> حقل نصي لإدخال اسم الفئة الجديدة (حقل إلزامي)</li>
+                                <li><strong>زر حفظ الفئة:</strong> لحفظ الفئة الجديدة في النظام</li>
+                            </ul>
+                        </li>
+                        <li><strong>قائمة فئات الطلاب:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li><strong>الرقم المسلسل:</strong> رقم تسلسلي للفئة</li>
+                                <li><strong>الاسم:</strong> اسم الفئة</li>
+                                <li><strong>الإجراءات:</strong> أيقونات للتعديل أو الحذف</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    <h3 class="guide-section-title">كيفية الاستخدام</h3>
+                    <ul class="guide-list">
+                        <li><strong>إضافة فئة طالب جديدة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>في نموذج "إضافة فئة الطالب"، أدخل "الاسم" المطلوب للفئة الجديدة</li>
+                                <li>انقر على زر "حفظ الفئة" لإضافة الفئة إلى النظام</li>
+                            </ul>
+                        </li>
+                        <li><strong>تعديل فئة طالب موجودة:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>ابحث عن الفئة التي ترغب في تعديلها في القائمة</li>
+                                <li>انقر على أيقونة "تعديل" (قلم) بجانب الفئة</li>
+                                <li>سيظهر اسم الفئة الحالي في نموذج الإضافة</li>
+                                <li>قم بتعديل الاسم في الحقل</li>
+                                <li>انقر على زر "حفظ الفئة" لتحديث الاسم</li>
+                            </ul>
+                        </li>
+                        <li><strong>حذف فئة طالب:</strong>
+                            <ul style="padding-right: 20px; margin-top: 10px;">
+                                <li>ابحث عن الفئة التي ترغب في حذفها في القائمة</li>
+                                <li>انقر على أيقونة "حذف" (سلة مهملات) بجانب الفئة</li>
+                                <li>ستظهر نافذة طلب تأكيد الحذف</li>
+                                <li>انقر على "نعم" لتأكيد عملية الحذف</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="guide-image">
+                    <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="توضيح فئات الطلاب">
+                </div>
+            </div>
+            
+            <div class="tips-section">
+                <h4 class="tips-title"><i class="fas fa-lightbulb"></i> نصائح وإرشادات</h4>
+                <ul class="tips-list">
+                    <li>اختر أسماء فئات واضحة ومفيدة لتصنيف الطلاب بشكل فعال</li>
+                    <li>يمكن استخدام هذه الفئات لتسهيل عمليات البحث، إعداد التقارير، أو تطبيق سياسات محددة على مجموعات معينة من الطلاب</li>
+                    <li>كن حذرًا عند حذف الفئات، حيث قد يؤثر ذلك على تصنيف الطلاب المرتبطين بها</li>
+                    <li>استخدم فئات متعددة لتقسيم الطلاب حسب الصفات المشتركة مثل المستوى الأكاديمي أو التخصص</li>
+                    <li>راجع الفئات بانتظام للتأكد من أنها لا تزال مناسبة لاحتياجات المؤسسة</li>
+                    <li>استخدم شريط البحث للعثور على الفئات بسرعة عند وجود عدد كبير منها</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // تأثيرات الظهور عند التمرير
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('.animate').forEach(element => {
+                element.classList.remove('animate');
+                observer.observe(element);
+            });
+            
+            // قائمة الهاتف المحمول
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                hamburger.classList.toggle('active');
+            });
+            
+            // تفاعل أزرار التعديل
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const name = row.querySelector('td:nth-child(2)').textContent;
+                    
+                    // ملء النموذج بالمعلومات
+                    document.getElementById('category-name').value = name;
+                    
+                    // تغيير نص الزر لحفظ التعديلات
+                    document.getElementById('save-btn').innerHTML = '<i class="fas fa-save"></i> تحديث الفئة';
+                    document.getElementById('save-btn').dataset.id = this.dataset.id;
+                    
+                    // التمرير إلى النموذج
+                    document.querySelector('.add-category-form').scrollIntoView({behavior: 'smooth'});
+                });
+            });
+            
+            // تفاعل أزرار الحذف
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('هل أنت متأكد من رغبتك في حذف هذه الفئة؟ سيتم حذفها بشكل دائم.')) {
+                        const row = this.closest('tr');
+                        row.style.opacity = '0.5';
+                        setTimeout(() => {
+                            row.remove();
+                        }, 500);
+                    }
+                });
+            });
+            
+            // زر الإلغاء
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                document.getElementById('category-name').value = '';
+                document.getElementById('save-btn').innerHTML = '<i class="fas fa-save"></i> حفظ الفئة';
+                delete document.getElementById('save-btn').dataset.id;
+            });
+            
+            // زر الحفظ
+            document.getElementById('save-btn').addEventListener('click', function() {
+                const name = document.getElementById('category-name').value;
+                
+                if (!name) {
+                    alert('الرجاء إدخال اسم الفئة');
+                    return;
+                }
+                
+                if (this.dataset.id) {
+                    // تحديث الفئة الحالية
+                    alert('تم تحديث الفئة بنجاح: ' + name);
+                } else {
+                    // إضافة فئة جديدة
+                    alert('تم إضافة الفئة بنجاح: ' + name);
+                    
+                    // إضافة الصف الجديد إلى الجدول
+                    const table = document.querySelector('.category-table tbody');
+                    const newRow = document.createElement('tr');
+                    
+                    // توليد رقم تسلسلي جديد
+                    const rowCount = table.querySelectorAll('tr').length + 1;
+                    
+                    newRow.innerHTML = `
+                        <td>${rowCount}</td>
+                        <td>${name}</td>
+                        <td>
+                            <div class="item-actions">
+                                <button class="action-btn edit-btn" data-id="${rowCount}"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn" data-id="${rowCount}"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    
+                    table.appendChild(newRow);
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('reset-btn').click();
+                    
+                    // إضافة معالجات الأحداث للأزرار الجديدة
+                    newRow.querySelector('.edit-btn').addEventListener('click', function() {
+                        const row = this.closest('tr');
+                        const name = row.querySelector('td:nth-child(2)').textContent;
+                        document.getElementById('category-name').value = name;
+                        document.getElementById('save-btn').innerHTML = '<i class="fas fa-save"></i> تحديث الفئة';
+                        document.getElementById('save-btn').dataset.id = this.dataset.id;
+                    });
+                    
+                    newRow.querySelector('.delete-btn').addEventListener('click', function() {
+                        if (confirm('هل أنت متأكد من رغبتك في حذف هذه الفئة؟ سيتم حذفها بشكل دائم.')) {
+                            const row = this.closest('tr');
+                            row.style.opacity = '0.5';
+                            setTimeout(() => {
+                                row.remove();
+                            }, 500);
+                        }
+                    });
+                }
+            });
+            
+            // البحث في الجدول
+            const searchInput = document.querySelector('.search-box input');
+            const tableRows = document.querySelectorAll('.category-table tbody tr');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                
+                tableRows.forEach(row => {
+                    const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    if (name.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
